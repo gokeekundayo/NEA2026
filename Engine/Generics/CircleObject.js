@@ -1,0 +1,32 @@
+import GenericObject from "../GenericObject.js";
+
+export default class CircleObject extends GenericObject {
+	constructor({ radius = 50, ...rest }) {
+		super(rest);
+		Object.assign(this, { radius });
+	}
+	draw(context) {
+		context.fillStyle = "blue";
+		context.beginPath();
+		context.arc(
+			this.position.x + this.radius,
+			this.position.y + this.radius,
+			this.radius,
+			0,
+			Math.PI * 2
+		);
+		context.fill();
+	}
+
+	toPolygon() {
+		const points = [];
+		for (let i = 0; i < 16; i++) {
+			const angle = (i / 16) * Math.PI * 2;
+			points.push({
+				x: this.x + Math.cos(angle) * this.radius,
+				y: this.y + Math.sin(angle) * this.radius,
+			});
+		}
+		return points;
+	}
+}

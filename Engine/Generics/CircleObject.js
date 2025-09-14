@@ -4,6 +4,7 @@ export default class CircleObject extends GenericObject {
 	constructor({ radius = 50, ...rest }) {
 		super(rest);
 		Object.assign(this, { radius });
+		this.sizeX = this.sizeY = this.radius * 2;
 	}
 	draw(context) {
 		context.fillStyle = "blue";
@@ -23,8 +24,8 @@ export default class CircleObject extends GenericObject {
 		for (let i = 0; i < 16; i++) {
 			const angle = (i / 16) * Math.PI * 2;
 			points.push({
-				x: this.x + Math.cos(angle) * this.radius,
-				y: this.y + Math.sin(angle) * this.radius,
+				x: this.position.x + Math.cos(angle) * this.radius,
+				y: this.position.y + Math.sin(angle) * this.radius,
 			});
 		}
 		return points;

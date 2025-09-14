@@ -11,14 +11,19 @@ export default class GenericObject {
 		this.energyStores.push(energyStore);
 		energyStore.target = this;
 	}
-
+	toPolygon() {
+		throw new Error("toPolygon() must be implemented in subclasses");
+	}
 	update(deltaTime) {
-		this.height = this.base - this.position.y;
+		this.height = this.base - (this.position.y + this.sizeY);
+		this.customUpdate();
 		for (const store of this.energyStores) {
 			store.update(deltaTime);
 		}
 	}
-
+	customUpdate() {
+		return;
+	}
 	collidesWith(other) {
 		return polygonsCollide(this.toPolygon(), other.toPolygon());
 	}

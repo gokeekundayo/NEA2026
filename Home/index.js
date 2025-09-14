@@ -31,8 +31,16 @@ const GPEAttachment1 = new GPEStore({
 	gravity: 1, // m/s² (moon gravity)
 	pixelsPerMeter: pixelsPerMeter,
 });
+const GPEAttachment2 = new GPEStore({
+	gravity: 1, // m/s² (moon gravity)
+	pixelsPerMeter: pixelsPerMeter,
+});
 myObject1.attachEnergyStore(GPEAttachment1);
+
 myEnvironment.update({
 	interval: 0,
 	start: () => {},
 });
+setTimeout(() => {
+	myObject2.attachEnergyStore(GPEAttachment2);
+}, 2000);

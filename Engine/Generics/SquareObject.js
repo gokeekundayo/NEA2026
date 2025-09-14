@@ -11,10 +11,10 @@ export default class SquareObject extends GenericObject {
 	}
 	toPolygon() {
 		return [
-			{ x: this.x, y: this.y },
-			{ x: this.x + this.sizeX, y: this.y },
-			{ x: this.x + this.sizeX, y: this.y + this.sizeY },
-			{ x: this.x, y: this.y + this.sizeY },
+			{ x: this.position.x, y: this.position.y },
+			{ x: this.position.x + this.sizeX, y: this.position.y },
+			{ x: this.position.x + this.sizeX, y: this.position.y + this.sizeY },
+			{ x: this.position.x, y: this.position.y + this.sizeY },
 		];
 	}
 }

@@ -11,6 +11,7 @@ export default class Environment {
 		this.canvas.style.border = "4px solid green";
 		// Sky blue background
 		this.objects = [];
+		this.Graphs = []
 	}
 	addObject(object) {
 		this.objects.push(object);
@@ -54,6 +55,10 @@ export default class Environment {
 						//console.log("Collision detected between", object, "and", object2);
 					}
 				}
+			}
+
+			for(let graph of this.Graphs){
+				graph.draw(this.context)
 			}
 			requestAnimationFrame(loop);
 		};

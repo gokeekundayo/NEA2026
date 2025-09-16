@@ -18,7 +18,7 @@ export class GPEStore extends EnergyStore {
 			this.target.position.y += this.target.velocity.y * deltaTime;
 			this.energy = this.calculate();
 		} else {
-			this.target.position.y = this.target.base;
+			this.target.position.y = this.target.base-100;
 			this.target.velocity.y = 0;
 		}
 	}

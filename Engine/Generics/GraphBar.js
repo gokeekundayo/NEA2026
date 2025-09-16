@@ -6,25 +6,31 @@ export default class GraphBar {
         this.init()
         this.keyAttach;
         this.scaleKeyAttach;
+        this.text;
     }
 
     draw(context) {
+        if(this.keyAttach){
+            this.cHeight = this.target[keyAttach]
+            if(this.scaleKeyAttach){
+            this.cHeight = this.target[keyAttach]/this.parent.height
+  
+            }
+          }
+          //
         context.save() 
         context.fillStyle = this.color??"green"
         context.strokeStyle = "black"
-
+        //Drawing rectangle
         context.lineWidth = 2;
         context.strokeRect(this.x, this.y, this.cWidth * this.parent.factorX, this.cHeight*this.parent.factorY )
         context.stroke()
         context.fillRect(this.x, this.y, this.cWidth * this.parent.factorX, this.cHeight*this.parent.factorY )
         context.restore() //Reset Canvas settings
 
-        if(this.keyAttach){
-          this.cHeight = this.target[keyAttach]
-          if(this.scaleKeyAttach){
-          this.cHeight = this.target[keyAttach]/this.parent.height
-
-          }
+        //Drawing Text
+        if(this.text){
+            context.fillText(this.text,this.x,this.y)
         }
     }
 
@@ -44,5 +50,8 @@ export default class GraphBar {
     attachToKey(key,scale = false){
         this.keyAttach = key
         this.scaleKeyAttach = scale
+    }
+    setText(text){
+        this.text = text
     }
 }

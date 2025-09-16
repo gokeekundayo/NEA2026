@@ -46,9 +46,9 @@ myObject1.attachEnergyStore(KEAttachment1);
 
 //Graph instantiation
 let graph1 = new GraphObject({x:400,y:200,width:500,height:500,target:myEnvironment,sizeX:8,sizeY:8})
-let bar1 = new GraphBar({cWidth:2,cHeight:2,parent:graph1,start:2,color:"#00fa00"})
-let bar2 = new GraphBar({cWidth:2,cHeight:2,parent:graph1,start:4.5,color:"green"})
-
+let bar1 = new GraphBar({cWidth:1,cHeight:2,parent:graph1,start:1,color:"#00fa00"})
+let bar2 = new GraphBar({cWidth:1,cHeight:2,parent:graph1,start:2,color:"green"})
+bar1.setText("KE")
 //Update Graph
 myEnvironment.update({
 	interval: 0,

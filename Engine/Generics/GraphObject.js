@@ -1,7 +1,7 @@
 export default class GraphObject {
-    constructor({ x, y, background, width, height,target,sizeX = 8,sizeY = 8 }) {
+    constructor({ x, y, background, width, height,target,sizeX = 8,sizeY = 8,max }) {
         this.elements = []
-        Object.assign(this, { x, y, background, width, height,target,sizeX,sizeY})
+        Object.assign(this, { x, y, background, width, height,target,sizeX,sizeY,max})
         this.factorX = this.width/this.sizeX
         this.factorY = this.width/this.sizeY
         //Start Drawing on Instantiation
@@ -15,6 +15,19 @@ export default class GraphObject {
         for(let element of this.elements){
             element.draw(context)
         }
+        //Text
+        let scaleFactor = this.max/this.height
+        for(let y=0;y<=this.max;y+=this.max/this.factorY*this.sizeY){
+            context.fillText(this.max-y,this.x-50,this.y+y)
+            context.beginPath()
+            context.moveTo(this.x+10,this.y+y)
+            context.lineTo(this.x-10,this.y+y)
+            context.stroke()
+            context.beginPath()
+        }
+    }
+    init(){
+
     }
     addBar(Bar){
         this.elements.push(Bar)

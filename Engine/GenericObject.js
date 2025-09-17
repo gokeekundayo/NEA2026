@@ -1,15 +1,51 @@
 import { polygonsCollide } from "./Tools/Tools.js";
 
 export default class GenericObject {
-	constructor({ mass, position, velocity, base, resistance, environment }) {
-		Object.assign(this, { mass, position, velocity, resistance, environment });
+	constructor({
+		mass,
+		position,
+		velocity,
+		base,
+		resistance,
+		environment,
+		deformable = false,
+	}) {
+		this.energyResetAllowed = true;
+		Object.assign(this, {
+			mass,
+			position,
+			velocity,
+			resistance,
+			environment,
+			deformable,
+		});
 		this.base = base ?? position.y;
 		this.energyStores = [];
+
+		this.bodyProps = { scaleX: 1, scaleY: 1 };
+		this.EVENT = {
+			hitBase: {
+				state: false,
+				toggle: function () {
+					this.EVENT.hitBase.state = !this.EVENT.hitBase.state;
+				},
+			},
+		};
 		this.environment?.addObject(this);
 	}
 	attachEnergyStore(energyStore) {
 		this.energyStores.push(energyStore);
 		energyStore.target = this;
+	}
+	drawSoftBody(context) {
+		const polygon = this.toPolygon();
+		context.beginPath();
+		context.moveTo(polygon[0].x, polygon[0].y);
+		for (let point of polygon) {
+			context.lineTo(point.x, point.y);
+		}
+		context.closePath();
+		context.stroke();
 	}
 	toPolygon() {
 		throw new Error("toPolygon() must be implemented in subclasses");

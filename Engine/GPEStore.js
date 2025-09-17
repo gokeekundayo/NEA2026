@@ -18,8 +18,15 @@ export class GPEStore extends EnergyStore {
 			this.target.position.y += this.target.velocity.y * deltaTime;
 			this.energy = this.calculate();
 		} else {
-			this.target.position.y = this.target.base-100;
+			if (
+				this.target.EVENT.hitBase.state == false &&
+				this.target.velocity.y != 0
+			)
+				this.target.EVENT.hitBase.state = true;
+
+			this.target.position.y = this.target.base - 100;
 			this.target.velocity.y = 0;
+			this.target.energyResetAllowed = false;
 		}
 	}
 }

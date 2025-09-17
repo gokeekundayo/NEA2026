@@ -8,6 +8,10 @@ export default class CircleObject extends GenericObject {
 	}
 	draw(context) {
 		context.fillStyle = "blue";
+		if (this.softBody) {
+			this.drawSoftBody(context);
+			return;
+		}
 		context.beginPath();
 		context.arc(
 			this.position.x + this.radius,
@@ -21,11 +25,18 @@ export default class CircleObject extends GenericObject {
 
 	toPolygon() {
 		const points = [];
-		for (let i = 0; i < 16; i++) {
-			const angle = (i / 16) * Math.PI * 2;
+		this.bodyProps.scaleX = 1 / Math.sqrt(this.bodyProps.scaleY);
+		for (let i = 0; i < 512; i++) {
+			const angle = (i / 512) * Math.PI * 2;
 			points.push({
-				x: this.position.x + Math.cos(angle) * this.radius,
-				y: this.position.y + Math.sin(angle) * this.radius,
+				x:
+					this.position.x +
+					Math.cos(angle) * this.radius * this.bodyProps.scaleX +
+					this.radius,
+				y:
+					this.position.y +
+					Math.sin(angle) * this.radius * this.bodyProps.scaleY +
+					this.radius,
 			});
 		}
 		return points;

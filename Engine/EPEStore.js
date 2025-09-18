@@ -27,18 +27,17 @@ export default class EPEStore extends EnergyStore {
 				//console.log(this.target.velocity.y);
 
 				//
-				this.target.position.y -= 0.0001;
+				this.target.position.y -= (0.1+0.2)/3;
+				this.target.lastKEnergy *= 0.4;
+
 				this.target.velocity.y =
 					this.target.velocity.y || -this.target.lastKEnergy;
-				this.target.lastKEnergy *= 0.7;
-				this.target.bodyProps.scaleY = Math.min(
-					1 - Math.abs(this.target.velocity.y) / this.springConstant
+				this.target.bodyProps.scaleY = Math.max(
+					1 - Math.abs(this.target.velocity.y) / this.springConstant,0.85
 				);
 			}
 
-			// Reverse velocity and reduce by 30% to simulate energy loss
-
-			// Reverse velocity and reduce by 30% to simulate energy loss
+			
 		}
 
 		this.target.bodyProps.scaleY = Math.min(

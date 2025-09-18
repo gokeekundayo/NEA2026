@@ -9,6 +9,8 @@ export default class CircleObject extends GenericObject {
 	draw(context) {
 		context.fillStyle = "blue";
 		if (this.softBody) {
+
+
 			this.drawSoftBody(context);
 			return;
 		}

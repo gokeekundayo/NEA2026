@@ -1,3 +1,4 @@
+import CircleObject from "./Generics/CircleObject.js";
 import { polygonsCollide } from "./Tools/Tools.js";
 
 export default class GenericObject {
@@ -38,14 +39,21 @@ export default class GenericObject {
 		energyStore.target = this;
 	}
 	drawSoftBody(context) {
+		
+		context.strokeStyle = this.strokeColor??"black"
 		const polygon = this.toPolygon();
+		
+
 		context.beginPath();
 		context.moveTo(polygon[0].x, polygon[0].y);
 		for (let point of polygon) {
 			context.lineTo(point.x, point.y);
 		}
+		
 		context.closePath();
+		
 		context.stroke();
+		this.strokeColor = "black"
 	}
 	toPolygon() {
 		throw new Error("toPolygon() must be implemented in subclasses");
@@ -61,6 +69,8 @@ export default class GenericObject {
 		return;
 	}
 	collidesWith(other) {
-		return polygonsCollide(this.toPolygon(), other.toPolygon());
+		let validCollision = polygonsCollide(this.toPolygon(), other.toPolygon());
+			
+		return validCollision;
 	}
 }

@@ -1,3 +1,5 @@
+import CircleObject from "./Generics/CircleObject.js";
+
 export default class Environment {
 	constructor({ base = 700 } = {}) {
 		Object.assign(this, { base });
@@ -52,7 +54,44 @@ export default class Environment {
 				//Fix later: Collision detection $TODO
 				for (let object2 of this.objects) {
 					if (object !== object2 && object.collidesWith(object2)) {
+						
+						
+					object.strokeColor = "red"
+						//Registering Collision and 
+						if(this.objects.indexOf(object)<this.objects.indexOf(object2)){
+						const v1 = (object.velocity.y * (object.mass - object2.mass) + 2 * object2.mass * object2.velocity.y) / (object.mass + object2.mass);
+						const v2 = (object2.velocity.y * (object2.mass - object.mass) + 2 * object.mass * object.velocity.y) / (object.mass + object2.mass);
+						
+						object.velocity.y = v1
+						object2.velocity.y = v2
+						if(object.position.y<object2.position.y){
+						if(object2.height == 0){
+							object.base = object2.position.y
+							//console.log("Square on circ");
+							
+							
+						}
+					}
+						
 						//console.log("Collision detected between", object, "and", object2);
+					}
+						else{
+							const v2 = (object.velocity.y * (object.mass - object2.mass) + 2 * object2.mass * object2.velocity.y) / (object.mass + object2.mass);
+						const v1 = (object2.velocity.y * (object2.mass - object.mass) + 2 * object.mass * object.velocity.y) / (object.mass + object2.mass);
+						
+						object.velocity.y = v1
+						object2.velocity.y = v2
+						if(object2.position.y>object.position.y){
+						if(object2.height == 0){
+							object.base = object2.position.y
+							//console.log("Circe on square");
+						}
+						}
+					}
+				}
+					else{
+					
+
 					}
 				}
 			}

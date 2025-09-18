@@ -8,6 +8,8 @@ export default class SquareObject extends GenericObject {
 	draw(context) {
 		context.fillStyle = "green";
 		if (this.softBody) {
+		
+
 			this.drawSoftBody(context);
 			return;
 		}

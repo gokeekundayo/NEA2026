@@ -24,13 +24,13 @@ export default class GraphBar {
             }
         }
         //
-        context.save()
+        
         context.fillStyle = this.color ?? "green"
         context.strokeStyle = "black"
         //Drawing rectangle
         context.lineWidth = 2;
         context.strokeRect(this.x, this.y, this.cWidth * this.parent.factorX, this.cHeight * this.parent.factorY)
-        context.stroke()
+        
         context.fillRect(this.x, this.y, this.cWidth * this.parent.factorX, this.cHeight * this.parent.factorY)
 
 

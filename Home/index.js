@@ -14,7 +14,7 @@ const metersOnScreen = 1; // e.g., 2 meters represented by 600px
 const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
 const myObject1 = new SquareObject({
 	mass: 2,
-	position: { x: 100, y: -500 },
+	position: { x: 100, y: -100 },
 	velocity: { x: 0, y: 0 },
 	base: 700,
 	sizeX: 100,
@@ -24,7 +24,7 @@ const myObject1 = new SquareObject({
 });
 const myObject2 = new CircleObject({
 	mass: 5,
-	position: { x: 300, y: 100 },
+	position: { x: 100, y: 100 },
 	velocity: { x: 0, y: 0 },
 	base: 700,
 	radius: 50,
@@ -97,11 +97,20 @@ let bar4 = new GraphBar({
 	start: 5,
 	color: "blue",
 });
+
+let bar5 = new GraphBar({
+	cWidth: 1,
+	cHeight: 2,
+	parent: graph1,
+	start: 6,
+	color: "red",
+})
 bar1.setText("KE");
 bar2.setText("GPE");
 
 bar3.setText("KE");
 bar4.setText("GPE");
+bar5.setText("EPE");
 //Update Graph
 myObject2.softBody = true;
 myObject1.softBody = true;
@@ -113,5 +122,7 @@ myEnvironment.update({
 
 		bar3.setValue(Math.abs(KEAttachment2.energy / 500));
 		bar4.setValue(Math.abs(GPEAttachment2.energy / 500));
+
+		bar5.setValue((1-myObject2.bodyProps.scaleY)*45);
 	},
 });

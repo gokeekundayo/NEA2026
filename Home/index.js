@@ -4,6 +4,7 @@ import GenericObject from "../Engine/GenericObject.js";
 import CircleObject from "../Engine/Generics/CircleObject.js";
 import GraphBar from "../Engine/Generics/GraphBar.js";
 import GraphObject from "../Engine/Generics/GraphObject.js";
+import ImageObject from "../Engine/Generics/ImageObject.js";
 import SquareObject from "../Engine/Generics/SquareObject.js";
 import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
@@ -12,7 +13,7 @@ const myEnvironment = new Environment();
 const screenHeight = window.innerHeight; // px
 const metersOnScreen = 1; // e.g., 2 meters represented by 600px
 const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
-const myObject1 = new SquareObject({
+/* const myObject1 = new SquareObject({
 	mass: 2,
 	position: { x: 100, y: -100 },
 	velocity: { x: 0, y: 0 },
@@ -126,3 +127,55 @@ myEnvironment.update({
 		bar5.setValue((1-myObject2.bodyProps.scaleY)*45);
 	},
 });
+ */
+//Initialisation
+let myFlappyBird = new ImageObject({
+	mass: 2,
+	position: { x: 100, y: 200 },
+	velocity: { x: 0, y: 0 },
+	base: 770,
+	sizeX: 40,
+	sizeY:40 ,
+	resistance: -1,
+	environment: myEnvironment,
+	src:"../Assets/redbird-upflap.png"
+})
+myFlappyBird.addKeyBind({key:" ",start:()=>{
+	myFlappyBird.velocity.y =-100
+}})
+//Attach GPE Store
+const GPEAttachment1 = new GPEStore({
+	gravity: 0.1, // m/s² (moon gravity)
+	pixelsPerMeter: pixelsPerMeter,
+});
+myFlappyBird.attachEnergyStore(GPEAttachment1)
+console.log(myFlappyBird.imageElement);
+//Pipes
+myEnvironment.pipes = []
+myEnvironment.update({
+	interval:3000/1000,
+	start:()=>{
+		//Create new Pipes
+		const currentPipe = new ImageObject({
+			mass: 2,
+			position: { x: myEnvironment.canvas.width, y: 380 },
+			velocity: { x: 0, y: 0 },
+			base: 700,
+			sizeX: 100,
+			sizeY: 100,
+			resistance: -1,
+			environment: myEnvironment,
+			src:"../Assets/pipe-green.png"
+		})
+		myEnvironment.pipes.push(currentPipe)
+	}
+});
+
+myEnvironment.update({
+	interval:0,
+	start:()=>{
+		for(let pipe of myEnvironment.pipes){
+			pipe.position.x--
+		}
+	}
+})

@@ -19,7 +19,10 @@ export default class Environment {
 		this.objects.push(object);
 		object.environment = this;
 	}
-
+/**
+ * @param {Object} functionAttach - Function Parameters
+ * @param {number} functionAttach.interval - Delay in Seconds
+ * @param {function} functionAttach.start - Function to execute */
 	update(functionAttach) {
 		let lastTime = performance.now();
 		let startTime = lastTime;
@@ -52,7 +55,7 @@ export default class Environment {
 				//Drawing handled externally
 				object.draw(object.environment.context);
 				//Fix later: Collision detection $TODO
-				for (let object2 of this.objects) {
+				/* for (let object2 of this.objects) {
 					if (object !== object2 && object.collidesWith(object2)) {
 						
 						
@@ -93,7 +96,7 @@ export default class Environment {
 					
 
 					}
-				}
+				} */
 			}
 
 			for(let graph of this.Graphs){

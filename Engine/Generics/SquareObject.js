@@ -23,4 +23,16 @@ export default class SquareObject extends GenericObject {
 			{ x: this.position.x, y: this.position.y + this.sizeY },
 		];
 	}
+	/**
+	 * 
+	 * @param {string} key - Key Input
+	 * @param {function} start - Function to be executed 
+	 */
+	addKeyBind({key:inputKey, start:start}){
+		window.addEventListener("keypress",(e)=>{
+			if(e.key.toLowerCase()==inputKey.toLowerCase()){
+				start()
+			}
+		})
+	}
 }

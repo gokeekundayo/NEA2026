@@ -1,1 +1,7 @@
 $TODO: Fix Collision logic
+
+$TODO: Add Uppper Pipes
+$TODO: Handle Collisiion
+$TODO: Randomise pipe heights
+$TODO: Add score
+$TODO: Fix Base Glitch

@@ -22,12 +22,12 @@ export default class GenericObject {
 		});
 		this.base = base ?? position.y;
 		this.energyStores = [];
-
+		this.keyBinds = {};
 		this.bodyProps = { scaleX: 1, scaleY: 1 };
 		this.EVENT = {
 			hitBase: {
 				state: false,
-				toggle: function () {
+				trigger: function () {
 					this.EVENT.hitBase.state = !this.EVENT.hitBase.state;
 				},
 			},
@@ -39,21 +39,19 @@ export default class GenericObject {
 		energyStore.target = this;
 	}
 	drawSoftBody(context) {
-		
-		context.strokeStyle = this.strokeColor??"black"
+		context.strokeStyle = this.strokeColor ?? "black";
 		const polygon = this.toPolygon();
-		
 
 		context.beginPath();
 		context.moveTo(polygon[0].x, polygon[0].y);
 		for (let point of polygon) {
 			context.lineTo(point.x, point.y);
 		}
-		
+
 		context.closePath();
-		
+
 		context.stroke();
-		this.strokeColor = "black"
+		this.strokeColor = "black";
 	}
 	toPolygon() {
 		throw new Error("toPolygon() must be implemented in subclasses");
@@ -70,7 +68,30 @@ export default class GenericObject {
 	}
 	collidesWith(other) {
 		let validCollision = polygonsCollide(this.toPolygon(), other.toPolygon());
-			
+
 		return validCollision;
+	}
+
+	addEventListener(event, callback) {
+		this.EVENT[event.toUpperCase()] = this.EVENT[event.toUpperCase()] || {
+			state: false,
+			trigger: callback,
+		};
+	}
+	dispatchEvent(event, ...args) {
+		this.EVENT[event.toUpperCase()]?.trigger(this, ...args);
+	}
+	addKeyBind({ key: inputKey, start: start, active = true, desc = "generic" }) {
+		this.keyBinds[inputKey.toLowerCase()] =
+			this.keyBinds[inputKey.toLowerCase()] || [];
+		this.keyBinds[inputKey.toLowerCase()].push({ name: desc, start });
+		this.keyBinds[inputKey.toLowerCase()].active = active;
+		//
+		window.addEventListener("keypress", (e) => {
+			if (e.key.toLowerCase() == inputKey.toLowerCase()) {
+				if (!this.keyBinds[inputKey].active) return;
+				this.keyBinds[inputKey].forEach((bind) => bind.start());
+			}
+		});
 	}
 }

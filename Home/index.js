@@ -9,7 +9,9 @@ import SquareObject from "../Engine/Generics/SquareObject.js";
 import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
 import { getID } from "../Engine/Tools/Tools.js";
-const myEnvironment = new Environment();
+const myEnvironment = new Environment({
+	base: 700,
+});
 const screenHeight = window.innerHeight; // px
 const metersOnScreen = 1; // e.g., 2 meters represented by 600px
 const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
@@ -133,28 +135,36 @@ let myFlappyBird = new ImageObject({
 	mass: 2,
 	position: { x: 100, y: 200 },
 	velocity: { x: 0, y: 0 },
-	base: 770,
+	base: myEnvironment.base,
 	sizeX: 40,
-	sizeY:40 ,
+	sizeY: 40,
 	resistance: -1,
 	environment: myEnvironment,
-	src:"../Assets/redbird-upflap.png"
-})
-myFlappyBird.addKeyBind({key:" ",start:()=>{
-	myFlappyBird.velocity.y =-100
-}})
+	src: "../Assets/redbird-upflap.png",
+});
+myFlappyBird.addKeyBind({
+	key: " ",
+	desc: "Flap",
+	start: () => {
+		myFlappyBird.velocity.y = -100;
+	},
+});
 //Attach GPE Store
 const GPEAttachment1 = new GPEStore({
 	gravity: 0.1, // m/s² (moon gravity)
 	pixelsPerMeter: pixelsPerMeter,
 });
-myFlappyBird.attachEnergyStore(GPEAttachment1)
-console.log(myFlappyBird.imageElement);
+myFlappyBird.attachEnergyStore(GPEAttachment1);
+//Events
+myFlappyBird.addEventListener("collide", (source, otherObject) => {
+	source.keyBinds[" "].active = false;
+});
+
 //Pipes
-myEnvironment.pipes = []
+myEnvironment.pipes = [];
 myEnvironment.update({
-	interval:3000/1000,
-	start:()=>{
+	interval: 3000 / 1000,
+	start: () => {
 		//Create new Pipes
 		const currentPipe = new ImageObject({
 			mass: 2,
@@ -162,20 +172,22 @@ myEnvironment.update({
 			velocity: { x: 0, y: 0 },
 			base: 700,
 			sizeX: 100,
-			sizeY: 100,
+			sizeY: 400,
 			resistance: -1,
 			environment: myEnvironment,
-			src:"../Assets/pipe-green.png"
-		})
-		myEnvironment.pipes.push(currentPipe)
-	}
+			src: "../Assets/pipe-green.png",
+		});
+		myEnvironment.pipes.push(currentPipe);
+	},
 });
 
 myEnvironment.update({
-	interval:0,
-	start:()=>{
-		for(let pipe of myEnvironment.pipes){
-			pipe.position.x--
+	interval: 0,
+	start: () => {
+		for (let pipe of myEnvironment.pipes) {
+			pipe.position.x -= 3;
+			pipe.drawSoftBody(myEnvironment.context);
+			myFlappyBird.drawSoftBody(myEnvironment.context);
 		}
-	}
-})
+	},
+});

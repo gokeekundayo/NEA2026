@@ -13,16 +13,16 @@ export default class Environment {
 		this.canvas.style.border = "4px solid green";
 		// Sky blue background
 		this.objects = [];
-		this.Graphs = []
+		this.Graphs = [];
 	}
 	addObject(object) {
 		this.objects.push(object);
 		object.environment = this;
 	}
-/**
- * @param {Object} functionAttach - Function Parameters
- * @param {number} functionAttach.interval - Delay in Seconds
- * @param {function} functionAttach.start - Function to execute */
+	/**
+	 * @param {Object} functionAttach - Function Parameters
+	 * @param {number} functionAttach.interval - Delay in Seconds
+	 * @param {function} functionAttach.start - Function to execute */
 	update(functionAttach) {
 		let lastTime = performance.now();
 		let startTime = lastTime;
@@ -33,14 +33,6 @@ export default class Environment {
 			const elapsedTime = (currentTime - startTime) / 1000;
 			elapsedFunctionTime += deltaTime; // Accumulate elapsed time
 
-			if (elapsedTime >= functionAttach.interval) {
-				if (elapsedFunctionTime >= functionAttach.interval) {
-					//If elapsed time is greater than or equal to interval, run function
-					functionAttach.start();
-					elapsedFunctionTime = 0; // reset elapsed time for function
-				}
-			}
-			lastTime = currentTime;
 			//Render Elements
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			this.context.fillStyle = "lightblue";
@@ -97,11 +89,27 @@ export default class Environment {
 
 					}
 				} */
+				for (let otherObject of this.objects) {
+					if (object !== otherObject) {
+						if (object.collidesWith(otherObject)) {
+							object.strokeColor = "red";
+							object.dispatchEvent("collide", otherObject);
+						}
+					}
+				}
 			}
 
-			for(let graph of this.Graphs){
-				graph.draw(this.context)
+			for (let graph of this.Graphs) {
+				graph.draw(this.context);
 			}
+			if (elapsedTime >= functionAttach.interval) {
+				if (elapsedFunctionTime >= functionAttach.interval) {
+					//If elapsed time is greater than or equal to interval, run function
+					functionAttach.start();
+					elapsedFunctionTime = 0; // reset elapsed time for function
+				}
+			}
+			lastTime = currentTime;
 			requestAnimationFrame(loop);
 		};
 

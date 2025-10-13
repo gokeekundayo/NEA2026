@@ -8,8 +8,6 @@ export default class SquareObject extends GenericObject {
 	draw(context) {
 		context.fillStyle = "green";
 		if (this.softBody) {
-		
-
 			this.drawSoftBody(context);
 			return;
 		}
@@ -24,15 +22,8 @@ export default class SquareObject extends GenericObject {
 		];
 	}
 	/**
-	 * 
+	 *
 	 * @param {string} key - Key Input
-	 * @param {function} start - Function to be executed 
+	 * @param {function} start - Function to be executed
 	 */
-	addKeyBind({key:inputKey, start:start}){
-		window.addEventListener("keypress",(e)=>{
-			if(e.key.toLowerCase()==inputKey.toLowerCase()){
-				start()
-			}
-		})
-	}
 }

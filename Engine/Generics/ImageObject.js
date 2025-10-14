@@ -8,38 +8,57 @@ export default class ImageObject extends SquareObject {
 		this.forceActualImage;
 		this.imageElement = new Image();
 		this.imageElement.src = this.src;
-		this.initialAspectRatio = this.imageElement.width/this.imageElement.height
+		this.initialAspectRatio = this.imageElement.width / this.imageElement.height
 	}
 
 	draw(context) {
-		if(this.forceActualSize){
+		let angle = this.rotation * Math.PI / 180
+		context.save()
+		context.translate(this.position.x+this.sizeX/2, this.position.y+this.sizeY/2)
+		context.rotate(angle)
+		if (this.forceActualSize) {
+
 			context.drawImage(
 				this.imageElement,
 				0,
 				0,
 				this.imageElement.width,
 				this.imageElement.height,
-				this.position.x,
-				this.position.y,
+				-this.imageElement.width / 2, 
+				-this.imageElement.height / 2,
 				this.imageElement.width,
 				this.imageElement.height
 			);
 		}
-		else{
-			if(this.forceAspectRatio){
-				let drawSizeX = this.sizeY*this.initialAspectRatio
-			context.drawImage(
-				this.imageElement,
-				0,
-				0,
-				this.imageElement.width,
-				this.imageElement.height,
-				this.position.x,
-				this.position.y,
-				drawSizeX,
-				this.sizeY,  	
-			);}
+		else {
+			if (this.forceAspectRatio) {
+				let drawSizeX = this.sizeY * this.initialAspectRatio
+				context.drawImage(
+					this.imageElement,
+					0,
+					0,
+					this.imageElement.width,
+					this.imageElement.height,
+					-drawSizeX/2,
+					-this.sizeY/2,
+					drawSizeX,
+					this.sizeY
+				);
+			}
+			else {
+				context.drawImage(
+					this.imageElement,
+					0,
+					0,
+					this.imageElement.width,
+					this.imageElement.height,
+					-this.sizeX/2,
+					-this.sizeY/2,
+					this.sizeX,
+					this.sizeY,
+				);
+			}
 		}
-		
+		context.restore()
 	}
 }

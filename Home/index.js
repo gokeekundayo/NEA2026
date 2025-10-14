@@ -136,17 +136,18 @@ let myFlappyBird = new ImageObject({
   position: { x: 100, y: 200 },
   velocity: { x: 0, y: 0 },
   base: myEnvironment.base,
-  sizeX: 40,
-  sizeY: 20,
+  sizeX: 80,
+  sizeY: 40,
   resistance: -1,
   environment: myEnvironment,
   src: "../Assets/redbird-upflap.png",
+  rotation:0,
 });
 myFlappyBird.addKeyBind({
   key: " ",
   desc: "Flap",
   start: () => {
-    myFlappyBird.velocity.y = -100;
+    myFlappyBird.velocity.y = -120;
 
     myFlappyBird.position.y = Math.min(
       myFlappyBird.position.y,
@@ -157,7 +158,7 @@ myFlappyBird.addKeyBind({
 });
 //Attach GPE Store
 const GPEAttachment1 = new GPEStore({
-  gravity: 0.1, // m/s² (moon gravity)
+  gravity: 0.2, // m/s² (moon gravity)
   pixelsPerMeter: pixelsPerMeter,
 });
 myFlappyBird.attachEnergyStore(GPEAttachment1);
@@ -176,41 +177,47 @@ myFlappyBird.addEventListener("collide", (source, otherObject) => {
 //Pipes
 myEnvironment.pipes = [];
 myEnvironment.update({
-  interval: 3000 / 1000,
+  interval: 2000 / 1000,
   start: () => {
     //Create new Pipes
-    
+	let minGap = myFlappyBird.sizeY*2
+	let gap = Math.floor(Math.random()*(250-200+1)) + 200
+    let topHeight = Math.random()*(myEnvironment.canvas.height-gap)
+    let bottomHeight =  myEnvironment.canvas.height-topHeight-gap
 	const currentTopPipe = new ImageObject({
 		mass: 2,
 		position: { x: myEnvironment.canvas.width, y: 0 },
 		velocity: { x: 0, y: 0 },
 		base: 700,
-		sizeX: 100,
-		sizeY: 340,
+		sizeX: 50,
+		sizeY: topHeight,
 		resistance: -1,
 		environment: myEnvironment,
 		src: "../Assets/pipe-green-flip.png",
 		
 	  });
+	  currentTopPipe.forceAspectRatio = false
 	  const currentBottomPipe = new ImageObject({
 		mass: 2,
-		position: { x: myEnvironment.canvas.width, y: 380 },
+		position: { x: myEnvironment.canvas.width, y: myEnvironment.base-bottomHeight },
 		velocity: { x: 0, y: 0 },
 		base: 700,
-		sizeX: 100,
-		sizeY: 300,
+		sizeX: 50,
+		sizeY: bottomHeight,
 		resistance: -1,
 		environment: myEnvironment,
 		src: "../Assets/pipe-green.png",
 	  });
+	  currentBottomPipe.forceAspectRatio = false
     myEnvironment.pipes.push(currentTopPipe);
     myEnvironment.pipes.push(currentBottomPipe);
   },
 });
-
+//Constantly update Environment
 myEnvironment.update({
   interval: 0,
   start: () => {
+	myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y/3  ,90  )  
     for (let pipe of myEnvironment.pipes) {
       pipe.position.x -= 3;
       pipe.drawSoftBody(myEnvironment.context);

@@ -10,6 +10,7 @@ export default class GenericObject {
 		resistance,
 		environment,
 		deformable = false,
+		rotation
 	}) {
 		this.energyResetAllowed = true;
 		Object.assign(this, {
@@ -19,6 +20,7 @@ export default class GenericObject {
 			resistance,
 			environment,
 			deformable,
+			rotation
 		});
 		this.base = base ?? position.y;
 		this.energyStores = [];

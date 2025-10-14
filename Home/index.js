@@ -10,7 +10,7 @@ import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
 import { getID } from "../Engine/Tools/Tools.js";
 const myEnvironment = new Environment({
-	base: 700,
+  base: 700,
 });
 const screenHeight = window.innerHeight; // px
 const metersOnScreen = 1; // e.g., 2 meters represented by 600px
@@ -132,62 +132,88 @@ myEnvironment.update({
  */
 //Initialisation
 let myFlappyBird = new ImageObject({
-	mass: 2,
-	position: { x: 100, y: 200 },
-	velocity: { x: 0, y: 0 },
-	base: myEnvironment.base,
-	sizeX: 40,
-	sizeY: 40,
-	resistance: -1,
-	environment: myEnvironment,
-	src: "../Assets/redbird-upflap.png",
+  mass: 2,
+  position: { x: 100, y: 200 },
+  velocity: { x: 0, y: 0 },
+  base: myEnvironment.base,
+  sizeX: 40,
+  sizeY: 20,
+  resistance: -1,
+  environment: myEnvironment,
+  src: "../Assets/redbird-upflap.png",
 });
 myFlappyBird.addKeyBind({
-	key: " ",
-	desc: "Flap",
-	start: () => {
-		myFlappyBird.velocity.y = -100;
-	},
+  key: " ",
+  desc: "Flap",
+  start: () => {
+    myFlappyBird.velocity.y = -100;
+
+    myFlappyBird.position.y = Math.min(
+      myFlappyBird.position.y,
+      myEnvironment.base - myFlappyBird.sizeY - 1
+    );
+    console.log("GG");
+  },
 });
 //Attach GPE Store
 const GPEAttachment1 = new GPEStore({
-	gravity: 0.1, // m/s² (moon gravity)
-	pixelsPerMeter: pixelsPerMeter,
+  gravity: 0.1, // m/s² (moon gravity)
+  pixelsPerMeter: pixelsPerMeter,
 });
 myFlappyBird.attachEnergyStore(GPEAttachment1);
 //Events
 myFlappyBird.addEventListener("collide", (source, otherObject) => {
-	source.keyBinds[" "].active = false;
+  //If bird is falling
+  if (source.velocity.y > 0) {
+
+    if (source.position.y <= otherObject.position.y) {
+      source.velocity.y = 0;
+	  
+    }
+  }
 });
 
 //Pipes
 myEnvironment.pipes = [];
 myEnvironment.update({
-	interval: 3000 / 1000,
-	start: () => {
-		//Create new Pipes
-		const currentPipe = new ImageObject({
-			mass: 2,
-			position: { x: myEnvironment.canvas.width, y: 380 },
-			velocity: { x: 0, y: 0 },
-			base: 700,
-			sizeX: 100,
-			sizeY: 400,
-			resistance: -1,
-			environment: myEnvironment,
-			src: "../Assets/pipe-green.png",
-		});
-		myEnvironment.pipes.push(currentPipe);
-	},
+  interval: 3000 / 1000,
+  start: () => {
+    //Create new Pipes
+    
+	const currentTopPipe = new ImageObject({
+		mass: 2,
+		position: { x: myEnvironment.canvas.width, y: 0 },
+		velocity: { x: 0, y: 0 },
+		base: 700,
+		sizeX: 100,
+		sizeY: 340,
+		resistance: -1,
+		environment: myEnvironment,
+		src: "../Assets/pipe-green-flip.png",
+	  });
+	  const currentBottomPipe = new ImageObject({
+		mass: 2,
+		position: { x: myEnvironment.canvas.width, y: 380 },
+		velocity: { x: 0, y: 0 },
+		base: 700,
+		sizeX: 100,
+		sizeY: 300,
+		resistance: -1,
+		environment: myEnvironment,
+		src: "../Assets/pipe-green.png",
+	  });
+    myEnvironment.pipes.push(currentTopPipe);
+    myEnvironment.pipes.push(currentBottomPipe);
+  },
 });
 
 myEnvironment.update({
-	interval: 0,
-	start: () => {
-		for (let pipe of myEnvironment.pipes) {
-			pipe.position.x -= 3;
-			pipe.drawSoftBody(myEnvironment.context);
-			myFlappyBird.drawSoftBody(myEnvironment.context);
-		}
-	},
+  interval: 0,
+  start: () => {
+    for (let pipe of myEnvironment.pipes) {
+      pipe.position.x -= 3;
+      pipe.drawSoftBody(myEnvironment.context);
+      myFlappyBird.drawSoftBody(myEnvironment.context);
+    }
+  },
 });

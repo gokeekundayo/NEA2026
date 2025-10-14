@@ -14,10 +14,20 @@ export default class Environment {
 		// Sky blue background
 		this.objects = [];
 		this.Graphs = [];
+		this.EVENT = {}
 	}
 	addObject(object) {
 		this.objects.push(object);
 		object.environment = this;
+	}
+	addEventListener(event, callback) {
+		this.EVENT[event.toUpperCase()] = this.EVENT[event.toUpperCase()] || {
+			state: false,
+			trigger: callback,
+		};
+	}
+	dispatchEvent(event, ...args) {
+		this.EVENT[event.toUpperCase()]?.trigger(this, ...args);
 	}
 	/**
 	 * @param {Object} functionAttach - Function Parameters

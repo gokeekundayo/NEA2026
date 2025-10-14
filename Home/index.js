@@ -83,7 +83,7 @@ let bar2 = new GraphBar({
 	cHeight: 2,
 	parent: graph1,
 	start: 2,
-	color: "green",
+ 	color: "green",
 });
 
 let bar3 = new GraphBar({
@@ -190,6 +190,7 @@ myEnvironment.update({
 		resistance: -1,
 		environment: myEnvironment,
 		src: "../Assets/pipe-green-flip.png",
+		
 	  });
 	  const currentBottomPipe = new ImageObject({
 		mass: 2,

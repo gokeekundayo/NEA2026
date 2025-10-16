@@ -177,11 +177,11 @@ myFlappyBird.addEventListener("collide", (source, otherObject) => {
 //Pipes
 myEnvironment.pipes = [];
 myEnvironment.update({
-  interval: 2000 / 1000,
+  interval: 2500 / 1000,
   start: () => {
     //Create new Pipes
 	let minGap = myFlappyBird.sizeY*2
-	let gap = Math.floor(Math.random()*(250-200+1)) + 200
+	let gap = Math.floor(Math.random()*(350-200+1)) + 200
     let topHeight = Math.random()*(myEnvironment.canvas.height-gap)
     let bottomHeight =  myEnvironment.canvas.height-topHeight-gap
 	const currentTopPipe = new ImageObject({
@@ -219,9 +219,12 @@ myEnvironment.update({
   start: () => {
 	myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y/3  ,90  )  
     for (let pipe of myEnvironment.pipes) {
-      pipe.position.x -= 3;
+      pipe.position.x -= 7.5;
       pipe.drawSoftBody(myEnvironment.context);
       myFlappyBird.drawSoftBody(myEnvironment.context);
+	  if(pipe.position.x<myFlappyBird.position.x){
+		pipe.position.y--
+	  }
     }
   },
 });

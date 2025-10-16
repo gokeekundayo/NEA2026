@@ -1,8 +1,8 @@
 import CircleObject from "./Generics/CircleObject.js";
 
 export default class Environment {
-	constructor({ base = 700 } = {}) {
-		Object.assign(this, { base });
+	constructor({ base = 700, meta } = {}) {
+		Object.assign(this, { base, meta });
 
 		this.canvas = document.createElement("canvas");
 		this.context = this.canvas.getContext("2d");
@@ -14,7 +14,7 @@ export default class Environment {
 		// Sky blue background
 		this.objects = [];
 		this.Graphs = [];
-		this.EVENT = {}
+		this.EVENT = {};
 	}
 	addObject(object) {
 		this.objects.push(object);

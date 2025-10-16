@@ -6,11 +6,13 @@ import GraphBar from "../Engine/Generics/GraphBar.js";
 import GraphObject from "../Engine/Generics/GraphObject.js";
 import ImageObject from "../Engine/Generics/ImageObject.js";
 import SquareObject from "../Engine/Generics/SquareObject.js";
+import { TextObject } from "../Engine/Generics/TextObject.js";
 import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
 import { getID } from "../Engine/Tools/Tools.js";
 const myEnvironment = new Environment({
 	base: window.innerHeight * 0.9,
+	meta: { name: "Flappy Bird Simulation", score: 0 },
 });
 const screenHeight = window.innerHeight; // px
 const metersOnScreen = 1; // e.g., 2 meters represented by 600px
@@ -143,6 +145,15 @@ let myFlappyBird = new ImageObject({
 	src: "../Assets/redbird-upflap.png",
 	rotation: 0,
 });
+let myScore = new TextObject({
+	text: "0",
+	color: "red",
+	fontSize: 30,
+	position: { x: myEnvironment.canvas.width / 2, y: myEnvironment.base / 2 },
+	velocity: { x: 0, y: 0 },
+	environment: myEnvironment,
+	textAlign: "center",
+});
 myFlappyBird.addKeyBind({
 	key: " ",
 	desc: "Flap",
@@ -153,7 +164,6 @@ myFlappyBird.addKeyBind({
 			myFlappyBird.position.y,
 			myEnvironment.base - myFlappyBird.sizeY - 1
 		);
-		console.log("GG");
 	},
 });
 //Attach GPE Store
@@ -166,10 +176,8 @@ myFlappyBird.attachEnergyStore(GPEAttachment1);
 myFlappyBird.addEventListener("collide", (source, otherObject) => {
 	//If bird is falling
 	if (source.velocity.y > 0) {
-
 		if (source.position.y <= otherObject.position.y) {
 			source.velocity.y = 0;
-
 		}
 	}
 });
@@ -180,10 +188,10 @@ myEnvironment.update({
 	interval: 1750 / 1000,
 	start: () => {
 		//Create new Pipes
-		let minGap = myFlappyBird.sizeY * 2
-		let gap = Math.floor(Math.random() * (350 - 200 + 1)) + 200
-		let topHeight = Math.random() * (myEnvironment.base - gap)
-		let bottomHeight = myEnvironment.base - topHeight - gap
+		let minGap = myFlappyBird.sizeY * 2;
+		let gap = Math.floor(Math.random() * (350 - 200 + 1)) + 200;
+		let topHeight = Math.random() * (myEnvironment.base - gap);
+		let bottomHeight = myEnvironment.base - topHeight - gap;
 		const currentTopPipe = new ImageObject({
 			mass: 2,
 			position: { x: myEnvironment.canvas.width, y: 0 },
@@ -195,14 +203,16 @@ myEnvironment.update({
 			environment: myEnvironment,
 			src: "../Assets/pipe-green-flip.png",
 			meta: {
-				pipePlace: "top"
-			}
-
+				pipePlace: "top",
+			},
 		});
-		currentTopPipe.forceAspectRatio = false
+		currentTopPipe.forceAspectRatio = false;
 		const currentBottomPipe = new ImageObject({
 			mass: 2,
-			position: { x: myEnvironment.canvas.width, y: myEnvironment.base - bottomHeight },
+			position: {
+				x: myEnvironment.canvas.width,
+				y: myEnvironment.base - bottomHeight,
+			},
 			velocity: { x: 0, y: 0 },
 			base: myEnvironment.base,
 			sizeX: 50,
@@ -211,11 +221,10 @@ myEnvironment.update({
 			environment: myEnvironment,
 			src: "../Assets/pipe-green.png",
 			meta: {
-				pipePlace: "bottom"
-			}
-
+				pipePlace: "bottom",
+			},
 		});
-		currentBottomPipe.forceAspectRatio = false
+		currentBottomPipe.forceAspectRatio = false;
 		myEnvironment.pipes.push(currentTopPipe);
 		myEnvironment.pipes.push(currentBottomPipe);
 	},
@@ -224,19 +233,22 @@ myEnvironment.update({
 myEnvironment.update({
 	interval: 0,
 	start: () => {
-		myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y / 3, 90)
+		myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y / 3, 90);
 		for (let pipe of myEnvironment.pipes) {
 			pipe.position.x -= 7.5;
 			pipe.drawSoftBody(myEnvironment.context);
 			myFlappyBird.drawSoftBody(myEnvironment.context);
-			if (pipe.position.x < myFlappyBird.position.x) {
-				if (pipe.meta.pipePlace == "top")
-					pipe.position.y-=7.5
-				else {
-					pipe.position.y+=7.5
-				}
-			}
+			if (pipe.position.x + pipe.sizeX < 0) {
+				myEnvironment.pipes = myEnvironment.pipes.filter((p) => p !== pipe); //Delete pipe
 
+				myEnvironment.meta.score += 0.5;
+				myScore.text = myEnvironment.meta.score;
+				//When gone past a pipe
+				/* if (pipe.meta.pipePlace == "top") pipe.position.y -= 7.5;
+				else {
+					pipe.position.y += 7.5;
+				} */
+			}
 		}
 	},
 });

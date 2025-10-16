@@ -11,7 +11,7 @@ export default class GenericObject {
 		environment,
 		deformable = false,
 		rotation,
-		meta
+		meta,
 	}) {
 		this.energyResetAllowed = true;
 		Object.assign(this, {
@@ -22,7 +22,7 @@ export default class GenericObject {
 			environment,
 			deformable,
 			rotation,
-			meta
+			meta,
 		});
 		this.base = base ?? position.y;
 		this.energyStores = [];
@@ -58,7 +58,9 @@ export default class GenericObject {
 		this.strokeColor = "black";
 	}
 	toPolygon() {
-		throw new Error("toPolygon() must be implemented in subclasses");
+		console.warn(
+			`Warning: toPolygon() method not implemented in subclass of type: ${this.constructor.name}`
+		);
 	}
 	update(deltaTime) {
 		this.height = this.base - (this.position.y + this.sizeY);

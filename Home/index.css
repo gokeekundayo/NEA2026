@@ -5,108 +5,27 @@ body {
 	box-sizing: border-box;
 	border: 1px solid black;
 	background-color: rgb(255, 255, 255);
+	width: 100vw;
+	height: 100vh;
 }
-#introScreen {
-	/*Positioning*/
-	box-sizing: border-box;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 100%;
-	height: 100%;
-	transform: translate(-50%, -50%);
-	border: 1px solid green;
-
-	/*Content*/
-	display: grid;
-	grid-template-rows: [title] 1fr [menu] 1fr [info] 0.2fr;
-	grid-template-columns: [left] 1fr [middle] 2fr [right] 1fr;
-}
-#introTitle {
-	margin-top: 2rem;
-	font-family: SupplyCenter;
-	grid-column: middle;
-	grid-row: title;
-	font-size: 8rem;
-	align-self: start;
-	justify-self: center;
-	color: darkorange;
-	-webkit-text-stroke: 3px black;
-}
-#birdTitle {
-	justify-self: end;
-}
-#logo {
-	width: 10rem;
-	margin-left: -2rem;
-	aspect-ratio: 1/1;
-}
-#menuItems {
-	grid-row: menu;
-	grid-column: middle;
-	align-self: center;
-	justify-self: center;
-	width: 100%;
-	height: 60%;
-	align-self: baseline;
-	margin: 4rem;
-	/*Debugging*/
-	/* 	border: 2px solid black; */
-}
-.menuButton {
-	font-family: SupplyCenter;
-	color: dimgrey;
-	border: 2px solid black;
-	background-color: cornsilk;
-
-	border-radius: 0.5rem;
-	cursor: pointer;
+#backButton {
+	font-family: supplycenter;
+	width: 5rem;
+	height: 2.5rem;
+	margin: 1rem;
+	padding: 0.5rem;
+	border: 1px solid black;
 	text-align: center;
-	justify-self: center;
-
-	transition: 0.15s;
-	aspect-ratio: 30/3;
-	/*Spacing*/
-	width: 10rem;
-	padding: 1rem;
-	margin: 2rem;
-}
-.menuButton {
-	background-color: rgb(158, 179, 179);
-}
-.menuButton[active] {
-	background-color: cornsilk !important;
-}
-.menuButton[active="true"]:hover {
-	/*Remove if layout issues*/
-	scale: 1.1;
-	color: black;
-}
-#introInfo {
-	grid-row: info;
-	grid-column: middle;
-	width: 100%;
-	height: 90%;
-	/* border: 2px solid black; */
 	align-content: center;
-}
-
-#progressSkeleton {
-	border: 2px solid gray;
-	justify-self: center;
-	width: 50%;
-	aspect-ratio: 20/2;
 	border-radius: 1rem;
+	color: dimgrey;
+	background-color: wheat;
+	cursor: pointer;
+	transition: 0.15s;
+	z-index: 1000;
+	position: absolute;
 }
-#progressFill {
-	height: 100%;
-	border-radius: inherit;
-	background-color: rgb(0, 255, 42);
-	width: 0%;
-	z-index: -1;
-}
-#progressInfo {
-	justify-self: center;
-	margin: 0.3rem;
-	font-family: SupplyCenter;
+#backButton:hover {
+	background-color: cornsilk;
+	scale: 1.1;
 }

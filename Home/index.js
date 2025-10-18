@@ -19,6 +19,32 @@ const screenHeight = window.innerHeight; // px
 const metersOnScreen = 1; // e.g., 2 meters represented by 600px
 const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
 //Asseting
+let routes = {}; //All Routes
+let pageOrder = ["Home"]; //Last element is current/most recent page
+let allDocumentPages = document.querySelectorAll("[page]");
+let allRouteLinks = document.querySelectorAll("[route]");
+
+for (let page of allDocumentPages) {
+	page.style.display = "none";
+	routes[page.getAttribute("page")] = page;
+}
+for (let route of allRouteLinks) {
+	route.addEventListener("click", () => {
+		let targetPage = route.getAttribute("route");
+		routes[pageOrder[pageOrder.length - 1]].style.display = "none";
+		routes[targetPage].style.display = "grid";
+		routes[targetPage].prepend(getID("backButton"));
+		pageOrder.push(targetPage);
+	});
+}
+getID("backButton").addEventListener("click", () => {
+	if (pageOrder.length <= 1) return; //No more pages to go back to
+	routes[pageOrder[pageOrder.length - 1]].style.display = "none"; //Hide current page
+	pageOrder.pop();
+	routes[pageOrder[pageOrder.length - 1]].style.display = "grid"; //Show previous page
+});
+////Initial Page Setup
+routes["Home"].style.display = "grid"; //Start with Home/Intro screen
 let AssetsList = [
 	"../Assets/flappybirdskin.png",
 	"../Assets/Sprites/0.png",
@@ -227,7 +253,7 @@ function startGame() {
 }
 getID("startGameButton").addEventListener("click", () => {
 	if (!loadedAssets) return;
-	getID("introScreen").style.display = "none";
+
 	startGame();
 });
 /* const myObject1 = new SquareObject({

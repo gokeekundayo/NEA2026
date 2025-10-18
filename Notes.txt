@@ -5,3 +5,8 @@ $TODO: Handle Collisiion
 $TODO: Randomise pipe heights
 $TODO: Add score
 $TODO: Fix Base Glitch
+
+$IDEA: Make a custom back button for each page
+    - Style Button by .backButton class
+    - When moving to a new page:
+        - Clone Back button and add to new page

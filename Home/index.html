@@ -7,10 +7,14 @@
 		<link rel="stylesheet" href="fonts.css" />
 
 		<link rel="stylesheet" href="index.css" />
+		<link rel="stylesheet" href="HomeScreen.css" />
+		<link rel="stylesheet" href="SettingsScreen.css" />
 		<title>Physics Engine</title>
 	</head>
 	<body>
-		<div id="introScreen">
+		<div id="introScreen" page="Home">
+			<div id="backButton">Back</div>
+
 			<div id="introTitle">
 				Flappy
 				<div id="birdTitle">
@@ -19,8 +23,17 @@
 			</div>
 
 			<div id="menuItems">
-				<div class="menuButton" id="startGameButton">Start Game</div>
-				<div class="menuButton" active="true">Settings</div>
+				<div class="menuButton" id="startGameButton" route="GameScreen">
+					Start Game
+				</div>
+				<div
+					class="menuButton"
+					id="settingsButton"
+					active="true"
+					route="Settings"
+				>
+					Settings
+				</div>
 				<div class="menuButton" active="true">Quit</div>
 			</div>
 			<div id="introInfo">
@@ -30,6 +43,75 @@
 				<div id="progressInfo">Loading: <b id="currentAssetText"></b></div>
 			</div>
 		</div>
+		<div id="GameScreen" page="GameScreen"></div>
+
+		<div id="settingsScreen" page="Settings">
+			<div id="settingsNavBar">
+				<div
+					class="settingsNavItem"
+					id="graphicsSettingsButton"
+					active="true"
+					settingName="Graphics"
+				>
+					Graphics
+				</div>
+				<div
+					class="settingsNavItem"
+					id="audioSettingsButton"
+					active="true"
+					settingName="Audio"
+				>
+					Audio
+				</div>
+				<div
+					class="settingsNavItem"
+					id="controlsSettingsButton"
+					active="true"
+					settingName="Controls"
+				>
+					Controls
+				</div>
+				<div
+					class="settingsNavItem"
+					id="skinsSettingsButton"
+					active="true"
+					settingName="Skins"
+				>
+					Skins
+				</div>
+				<div
+					class="settingsNavItem"
+					id="aboutSettingsButton"
+					active="true"
+					settingName="About"
+				>
+					About
+				</div>
+				<div
+					class="settingsNavItem"
+					id="multiplayerSettingsButton"
+					active="true"
+					settingName="Multiplayer"
+				>
+					Multiplayer
+				</div>
+			</div>
+			<div id="settingsContent">
+				<div class="settingPage" settingPageName="Graphics">
+					Graphics Settings Page
+				</div>
+				<div class="settingPage" settingPageName="Audio">
+					Audio Settings Page
+				</div>
+				<div class="settingPage" settingPageName="Controls"></div>
+				<div class="settingPage" settingPageName="Skins"></div>
+				<div class="settingPage" settingPageName="About"></div>
+				<div class="settingPage" settingPageName="Multiplayer"></div>
+				<div class="settingPage"></div>
+			</div>
+		</div>
+
 		<script src="index.js" type="module"></script>
+		<script src="settings.js" type="module"></script>
 	</body>
 </html>

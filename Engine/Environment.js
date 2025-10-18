@@ -1,4 +1,5 @@
 import CircleObject from "./Generics/CircleObject.js";
+import { getID } from "./Tools/Tools.js";
 
 export default class Environment {
 	constructor({ base = 700, meta } = {}) {
@@ -8,7 +9,7 @@ export default class Environment {
 		this.context = this.canvas.getContext("2d");
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
-		document.body.appendChild(this.canvas);
+		getID("GameScreen").appendChild(this.canvas);
 		this.canvas.style.backgroundColor = "transparent";
 		this.canvas.style.border = "4px solid green";
 		// Sky blue background

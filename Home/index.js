@@ -10,13 +10,140 @@ import { TextObject } from "../Engine/Generics/TextObject.js";
 import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
 import { getID } from "../Engine/Tools/Tools.js";
-const myEnvironment = new Environment({
-	base: window.innerHeight * 0.9,
-	meta: { name: "Flappy Bird Simulation", score: 0 },
-});
-const screenHeight = window.innerHeight; // px
-const metersOnScreen = 1; // e.g., 2 meters represented by 600px
-const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
+function startGame() {
+	const myEnvironment = new Environment({
+		base: window.innerHeight * 0.9,
+		meta: { name: "Flappy Bird Simulation", score: 0 },
+	});
+	const screenHeight = window.innerHeight; // px
+	const metersOnScreen = 1; // e.g., 2 meters represented by 600px
+	const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
+
+	//Initialisation
+	let myFlappyBird = new ImageObject({
+		mass: 2,
+		position: { x: 100, y: 200 },
+		velocity: { x: 0, y: 0 },
+		base: myEnvironment.base,
+		sizeX: 80,
+		sizeY: 40,
+		resistance: -1,
+		environment: myEnvironment,
+		src: "../Assets/Sprites/redbird-upflap.png",
+		rotation: 0,
+	});
+	let myScore = new TextObject({
+		text: "0",
+		color: "red",
+		fontSize: 30,
+		position: { x: myEnvironment.canvas.width / 2, y: myEnvironment.base / 2 },
+		velocity: { x: 0, y: 0 },
+		environment: myEnvironment,
+		textAlign: "center",
+	});
+	myFlappyBird.addKeyBind({
+		key: " ",
+		desc: "Flap",
+		start: () => {
+			myFlappyBird.velocity.y = -200;
+
+			myFlappyBird.position.y = Math.min(
+				myFlappyBird.position.y,
+				myEnvironment.base - myFlappyBird.sizeY - 1
+			);
+		},
+	});
+	//Attach GPE Store
+	const GPEAttachment1 = new GPEStore({
+		gravity: 0.2, // m/s² (moon gravity)
+		pixelsPerMeter: pixelsPerMeter,
+	});
+	myFlappyBird.attachEnergyStore(GPEAttachment1);
+	//Events
+	myFlappyBird.addEventListener("collide", (source, otherObject) => {
+		//If bird is falling
+		if (source.velocity.y > 0) {
+			if (source.position.y <= otherObject.position.y) {
+				source.velocity.y = 0;
+			}
+		}
+	});
+
+	//Pipes
+	myEnvironment.pipes = [];
+	myEnvironment.update({
+		interval: 1750 / 1000,
+		start: () => {
+			//Create new Pipes
+			let minGap = myFlappyBird.sizeY * 2;
+			let gap = Math.floor(Math.random() * (350 - 200 + 1)) + 200;
+			let topHeight = Math.random() * (myEnvironment.base - gap);
+			let bottomHeight = myEnvironment.base - topHeight - gap;
+			const currentTopPipe = new ImageObject({
+				mass: 2,
+				position: { x: myEnvironment.canvas.width, y: 0 },
+				velocity: { x: 0, y: 0 },
+				base: myEnvironment.base,
+				sizeX: 50,
+				sizeY: topHeight,
+				resistance: -1,
+				environment: myEnvironment,
+				src: "../Assets/Sprites/pipe-green-flip.png",
+				meta: {
+					pipePlace: "top",
+				},
+			});
+			currentTopPipe.forceAspectRatio = false;
+			const currentBottomPipe = new ImageObject({
+				mass: 2,
+				position: {
+					x: myEnvironment.canvas.width,
+					y: myEnvironment.base - bottomHeight,
+				},
+				velocity: { x: 0, y: 0 },
+				base: myEnvironment.base,
+				sizeX: 50,
+				sizeY: bottomHeight,
+				resistance: -1,
+				environment: myEnvironment,
+				src: "../Assets/Sprites/pipe-green.png",
+				meta: {
+					pipePlace: "bottom",
+				},
+			});
+			currentBottomPipe.forceAspectRatio = false;
+			myEnvironment.pipes.push(currentTopPipe);
+			myEnvironment.pipes.push(currentBottomPipe);
+		},
+	});
+	//Constantly update Environment
+	myEnvironment.update({
+		interval: 0,
+		start: () => {
+			myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y / 3, 90);
+			for (let pipe of myEnvironment.pipes) {
+				pipe.position.x -= 7.5;
+				pipe.drawSoftBody(myEnvironment.context);
+				myFlappyBird.drawSoftBody(myEnvironment.context);
+				if (pipe.position.x + pipe.sizeX < 0) {
+					myEnvironment.pipes = myEnvironment.pipes.filter((p) => p !== pipe); //Delete pipe
+					myEnvironment.objects = myEnvironment.objects.filter(
+						(p) => p !== pipe
+					); //Delete pipe
+
+					myEnvironment.meta.score += 0.5;
+					myScore.text = myEnvironment.meta.score;
+					//When gone past a pipe
+					/* if (pipe.meta.pipePlace == "top") pipe.position.y -= 7.5;
+				else {
+					pipe.position.y += 7.5;
+				} */
+				}
+			}
+		},
+	});
+}
+
 /* const myObject1 = new SquareObject({
 	mass: 2,
 	position: { x: 100, y: -100 },
@@ -132,123 +259,3 @@ myEnvironment.update({
 	},
 });
  */
-//Initialisation
-let myFlappyBird = new ImageObject({
-	mass: 2,
-	position: { x: 100, y: 200 },
-	velocity: { x: 0, y: 0 },
-	base: myEnvironment.base,
-	sizeX: 80,
-	sizeY: 40,
-	resistance: -1,
-	environment: myEnvironment,
-	src: "../Assets/redbird-upflap.png",
-	rotation: 0,
-});
-let myScore = new TextObject({
-	text: "0",
-	color: "red",
-	fontSize: 30,
-	position: { x: myEnvironment.canvas.width / 2, y: myEnvironment.base / 2 },
-	velocity: { x: 0, y: 0 },
-	environment: myEnvironment,
-	textAlign: "center",
-});
-myFlappyBird.addKeyBind({
-	key: " ",
-	desc: "Flap",
-	start: () => {
-		myFlappyBird.velocity.y = -200;
-
-		myFlappyBird.position.y = Math.min(
-			myFlappyBird.position.y,
-			myEnvironment.base - myFlappyBird.sizeY - 1
-		);
-	},
-});
-//Attach GPE Store
-const GPEAttachment1 = new GPEStore({
-	gravity: 0.2, // m/s² (moon gravity)
-	pixelsPerMeter: pixelsPerMeter,
-});
-myFlappyBird.attachEnergyStore(GPEAttachment1);
-//Events
-myFlappyBird.addEventListener("collide", (source, otherObject) => {
-	//If bird is falling
-	if (source.velocity.y > 0) {
-		if (source.position.y <= otherObject.position.y) {
-			source.velocity.y = 0;
-		}
-	}
-});
-
-//Pipes
-myEnvironment.pipes = [];
-myEnvironment.update({
-	interval: 1750 / 1000,
-	start: () => {
-		//Create new Pipes
-		let minGap = myFlappyBird.sizeY * 2;
-		let gap = Math.floor(Math.random() * (350 - 200 + 1)) + 200;
-		let topHeight = Math.random() * (myEnvironment.base - gap);
-		let bottomHeight = myEnvironment.base - topHeight - gap;
-		const currentTopPipe = new ImageObject({
-			mass: 2,
-			position: { x: myEnvironment.canvas.width, y: 0 },
-			velocity: { x: 0, y: 0 },
-			base: myEnvironment.base,
-			sizeX: 50,
-			sizeY: topHeight,
-			resistance: -1,
-			environment: myEnvironment,
-			src: "../Assets/pipe-green-flip.png",
-			meta: {
-				pipePlace: "top",
-			},
-		});
-		currentTopPipe.forceAspectRatio = false;
-		const currentBottomPipe = new ImageObject({
-			mass: 2,
-			position: {
-				x: myEnvironment.canvas.width,
-				y: myEnvironment.base - bottomHeight,
-			},
-			velocity: { x: 0, y: 0 },
-			base: myEnvironment.base,
-			sizeX: 50,
-			sizeY: bottomHeight,
-			resistance: -1,
-			environment: myEnvironment,
-			src: "../Assets/pipe-green.png",
-			meta: {
-				pipePlace: "bottom",
-			},
-		});
-		currentBottomPipe.forceAspectRatio = false;
-		myEnvironment.pipes.push(currentTopPipe);
-		myEnvironment.pipes.push(currentBottomPipe);
-	},
-});
-//Constantly update Environment
-myEnvironment.update({
-	interval: 0,
-	start: () => {
-		myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y / 3, 90);
-		for (let pipe of myEnvironment.pipes) {
-			pipe.position.x -= 7.5;
-			pipe.drawSoftBody(myEnvironment.context);
-			myFlappyBird.drawSoftBody(myEnvironment.context);
-			if (pipe.position.x + pipe.sizeX < 0) {
-				myEnvironment.pipes = myEnvironment.pipes.filter((p) => p !== pipe); //Delete pipe
-
-				myEnvironment.meta.score += 0.5;
-				myScore.text = myEnvironment.meta.score;
-				//When gone past a pipe
-				/* if (pipe.meta.pipePlace == "top") pipe.position.y -= 7.5;
-				else {
-					pipe.position.y += 7.5;
-				} */
-			}
-		}
-	},
-});

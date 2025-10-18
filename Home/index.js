@@ -10,36 +10,117 @@ import { TextObject } from "../Engine/Generics/TextObject.js";
 import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
 import { getID } from "../Engine/Tools/Tools.js";
-function startGame() {
-	const myEnvironment = new Environment({
-		base: window.innerHeight * 0.9,
-		meta: { name: "Flappy Bird Simulation", score: 0 },
-	});
-	const screenHeight = window.innerHeight; // px
-	const metersOnScreen = 1; // e.g., 2 meters represented by 600px
-	const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
+const myEnvironment = new Environment({
+	base: window.innerHeight,
+	meta: { name: "Flappy Bird Simulation", score: 0 },
+});
 
+const screenHeight = window.innerHeight; // px
+const metersOnScreen = 1; // e.g., 2 meters represented by 600px
+const pixelsPerMeter = screenHeight / metersOnScreen; // 300 px/m
+//Asseting
+let AssetsList = [
+	"../Assets/flappybirdskin.png",
+	"../Assets/Sprites/0.png",
+	"../Assets/Sprites/1.png",
+	"../Assets/Sprites/2.png",
+	"../Assets/Sprites/3.png",
+	"../Assets/Sprites/4.png",
+	"../Assets/Sprites/5.png",
+	"../Assets/Sprites/6.png",
+	"../Assets/Sprites/7.png",
+	"../Assets/Sprites/8.png",
+	"../Assets/Sprites/9.png",
+	"../Assets/Sprites/background-day.png",
+	"../Assets/Sprites/background-night.png",
+	"../Assets/Sprites/base.png",
+	"../Assets/Sprites/bluebird-downflap.png",
+	"../Assets/Sprites/gameover.png",
+	"../Assets/Sprites/message.png",
+	"../Assets/Sprites/pipe-green-flip.png",
+	"../Assets/Sprites/pipe-green.png",
+	"../Assets/Sprites/pipe-red.png",
+	"../Assets/Sprites/redbird-downflap.png",
+	"../Assets/Sprites/redbird-midflap.png",
+	"../Assets/Sprites/redbird-upflap.png",
+	"../Assets/Sprites/yellowbird-downflap.png",
+	"../Assets/Sprites/yellowbird-midflap.png",
+	"../Assets/Sprites/yellowbird-upflap.png",
+	"../Assets/Backgrounds/citybackground2.png",
+];
+const Assets = {};
+let loadedAssets = false;
+async function LoadAssets(AssetList) {
+	const loadedImages = [];
+	for (let source in AssetList) {
+		await new Promise((resolve, reject) => {
+			const Asset = new Image();
+			Asset.src = AssetList[source];
+			const percentage = (source / (AssetList.length - 1)) * 100;
+			getID("currentAssetText").innerHTML = AssetList[source].replace(
+				"../Assets/",
+				""
+			);
+
+			Asset.addEventListener("load", () => {
+				Assets[AssetList[source].replace("../Assets/", "")] = Asset;
+				getID("progressFill").style.width = `${percentage}%`;
+
+				resolve();
+			});
+			Asset.onerror = reject;
+		});
+	}
+	return Assets;
+}
+LoadAssets(AssetsList).then((Assets) => {
+	loadedAssets = true;
+	myEnvironment.meta.Assets = Assets;
+	getID("startGameButton").setAttribute("active", "true");
+});
+
+//Game
+
+function startGame() {
+	myEnvironment.canvas.height =
+		myEnvironment.meta.Assets["Backgrounds/citybackground2.png"].height;
+	myEnvironment.canvas.width =
+		myEnvironment.meta.Assets["Backgrounds/citybackground2.png"].width;
+	let cityBackground = new ImageObject({
+		mass: 2,
+		position: { x: 0, y: 0 },
+		velocity: { x: 0, y: 0 },
+		base: myEnvironment.base,
+		sizeX: myEnvironment.meta.Assets["Backgrounds/citybackground2.png"].width,
+		sizeY: myEnvironment.meta.Assets["Backgrounds/citybackground2.png"].height,
+		resistance: -1,
+		environment: myEnvironment,
+		src: "Backgrounds/citybackground2.png",
+		rotation: 0,
+	});
 	//Initialisation
 	let myFlappyBird = new ImageObject({
 		mass: 2,
 		position: { x: 100, y: 200 },
 		velocity: { x: 0, y: 0 },
 		base: myEnvironment.base,
-		sizeX: 80,
-		sizeY: 40,
+		sizeX: 70,
+		sizeY: 70,
 		resistance: -1,
 		environment: myEnvironment,
-		src: "../Assets/Sprites/redbird-upflap.png",
+		src: "flappybirdskin.png",
 		rotation: 0,
 	});
+
 	let myScore = new TextObject({
 		text: "0",
-		color: "red",
+		color: "#850707FF",
 		fontSize: 30,
 		position: { x: myEnvironment.canvas.width / 2, y: myEnvironment.base / 2 },
 		velocity: { x: 0, y: 0 },
 		environment: myEnvironment,
 		textAlign: "center",
+		fontFamily: "SupplyCenter",
 	});
 	myFlappyBird.addKeyBind({
 		key: " ",
@@ -88,7 +169,7 @@ function startGame() {
 				sizeY: topHeight,
 				resistance: -1,
 				environment: myEnvironment,
-				src: "../Assets/Sprites/pipe-green-flip.png",
+				src: "Sprites/pipe-green-flip.png",
 				meta: {
 					pipePlace: "top",
 				},
@@ -106,7 +187,7 @@ function startGame() {
 				sizeY: bottomHeight,
 				resistance: -1,
 				environment: myEnvironment,
-				src: "../Assets/Sprites/pipe-green.png",
+				src: "Sprites/pipe-green.png",
 				meta: {
 					pipePlace: "bottom",
 				},
@@ -122,9 +203,10 @@ function startGame() {
 		start: () => {
 			myFlappyBird.rotation = Math.min(myFlappyBird.velocity.y / 3, 90);
 			for (let pipe of myEnvironment.pipes) {
-				pipe.position.x -= 7.5;
+				pipe.position.x -= 2;
 				pipe.drawSoftBody(myEnvironment.context);
 				myFlappyBird.drawSoftBody(myEnvironment.context);
+				cityBackground.drawSoftBody(myEnvironment.context);
 				if (pipe.position.x + pipe.sizeX < 0) {
 					myEnvironment.pipes = myEnvironment.pipes.filter((p) => p !== pipe); //Delete pipe
 					myEnvironment.objects = myEnvironment.objects.filter(
@@ -143,7 +225,11 @@ function startGame() {
 		},
 	});
 }
-
+getID("startGameButton").addEventListener("click", () => {
+	if (!loadedAssets) return;
+	getID("introScreen").style.display = "none";
+	startGame();
+});
 /* const myObject1 = new SquareObject({
 	mass: 2,
 	position: { x: 100, y: -100 },

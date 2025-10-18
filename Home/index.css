@@ -4,9 +4,11 @@ body {
 	overflow: hidden;
 	box-sizing: border-box;
 	border: 1px solid black;
+	background-color: rgb(255, 255, 255);
 }
 #introScreen {
 	/*Positioning*/
+	box-sizing: border-box;
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -69,8 +71,42 @@ body {
 	padding: 1rem;
 	margin: 2rem;
 }
-.menuButton:hover {
+.menuButton {
+	background-color: rgb(158, 179, 179);
+}
+.menuButton[active] {
+	background-color: cornsilk !important;
+}
+.menuButton[active="true"]:hover {
 	/*Remove if layout issues*/
 	scale: 1.1;
 	color: black;
+}
+#introInfo {
+	grid-row: info;
+	grid-column: middle;
+	width: 100%;
+	height: 90%;
+	/* border: 2px solid black; */
+	align-content: center;
+}
+
+#progressSkeleton {
+	border: 2px solid gray;
+	justify-self: center;
+	width: 50%;
+	aspect-ratio: 20/2;
+	border-radius: 1rem;
+}
+#progressFill {
+	height: 100%;
+	border-radius: inherit;
+	background-color: rgb(0, 255, 42);
+	width: 0%;
+	z-index: -1;
+}
+#progressInfo {
+	justify-self: center;
+	margin: 0.3rem;
+	font-family: SupplyCenter;
 }

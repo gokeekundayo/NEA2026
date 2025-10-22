@@ -2,7 +2,11 @@ import { getID } from "../Engine/Tools/Tools.js";
 let settingsButtons = document.querySelectorAll("[settingName]");
 let settingPageElements = document.querySelectorAll(".settingPage");
 const settingsPages = {};
-
+const elementStyles = {
+	".settingPage": {
+		display: "flex",
+	},
+};
 for (let page of settingPageElements) {
 	settingsPages[page.getAttribute("settingPageName")] = page;
 }
@@ -12,6 +16,6 @@ for (let settingButton of settingsButtons) {
 			page.style.display = "none";
 		});
 		settingsPages[settingButton.getAttribute("settingName")].style.display =
-			"grid";
+			elementStyles[".settingPage"].display;
 	});
 }

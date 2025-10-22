@@ -1,0 +1,6 @@
+@FlappyBirdAPI_HostAddress = http://localhost:5290
+
+GET {{FlappyBirdAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

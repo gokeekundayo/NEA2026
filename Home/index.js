@@ -108,11 +108,7 @@ LoadAssets(AssetsList).then((Assets) => {
 //Game
 
 function startGame() {
-	myEnvironment.canvas.height =
-		myEnvironment.meta.Assets["Backgrounds/citybackground2.png"].height;
-	myEnvironment.canvas.width =
-		myEnvironment.meta.Assets["Backgrounds/citybackground2.png"].width;
-	let cityBackground = new ImageObject({
+	/* let cityBackground = new ImageObject({
 		mass: 2,
 		position: { x: 0, y: 0 },
 		velocity: { x: 0, y: 0 },
@@ -123,7 +119,7 @@ function startGame() {
 		environment: myEnvironment,
 		src: "Backgrounds/citybackground2.png",
 		rotation: 0,
-	});
+	}); */
 	//Initialisation
 	let myFlappyBird = new ImageObject({
 		mass: 2,
@@ -232,7 +228,7 @@ function startGame() {
 				pipe.position.x -= 2;
 				pipe.drawSoftBody(myEnvironment.context);
 				myFlappyBird.drawSoftBody(myEnvironment.context);
-				cityBackground.drawSoftBody(myEnvironment.context);
+				//cityBackground.drawSoftBody(myEnvironment.context);
 				if (pipe.position.x + pipe.sizeX < 0) {
 					myEnvironment.pipes = myEnvironment.pipes.filter((p) => p !== pipe); //Delete pipe
 					myEnvironment.objects = myEnvironment.objects.filter(

@@ -10,7 +10,34 @@ import { TextObject } from "../Engine/Generics/TextObject.js";
 import { GPEStore } from "../Engine/GPEStore.js";
 import KEStore from "../Engine/KEStore.js";
 import { getID } from "../Engine/Tools/Tools.js";
-const myEnvironment = new Environment({
+import { GetAssetList, LoadAssets } from "./assets.js";
+import { connection } from "../Engine/Tools/Connection.js";
+import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
+let loadedAssets = false;
+connection
+	.start()
+	.then(() => {
+		const assetRequest = new ServerRequest(connection);
+		//Get Asset list From Server
+		GetAssetList(assetRequest).then((ListOfAssets) => {
+			//Map Asset List
+
+			ListOfAssets = ListOfAssets.images.map((asset) => {
+				asset = asset.replace("\\", "/");
+				asset = "../Assets/" + asset;
+				return asset;
+			});
+
+			LoadAssets(ListOfAssets).then((Assets) => {
+				loadedAssets = true;
+				myEnvironment.meta.Assets = Assets;
+				getID("startGameButton").setAttribute("active", "true");
+			});
+		});
+	})
+	.catch((err) => console.error(err));
+
+export const myEnvironment = new Environment({
 	base: window.innerHeight,
 	meta: { name: "Flappy Bird Simulation", score: 0 },
 });
@@ -45,65 +72,6 @@ getID("backButton").addEventListener("click", () => {
 });
 ////Initial Page Setup
 routes["Home"].style.display = "grid"; //Start with Home/Intro screen
-let AssetsList = [
-	"../Assets/flappybirdskin.png",
-	"../Assets/Sprites/0.png",
-	"../Assets/Sprites/1.png",
-	"../Assets/Sprites/2.png",
-	"../Assets/Sprites/3.png",
-	"../Assets/Sprites/4.png",
-	"../Assets/Sprites/5.png",
-	"../Assets/Sprites/6.png",
-	"../Assets/Sprites/7.png",
-	"../Assets/Sprites/8.png",
-	"../Assets/Sprites/9.png",
-	"../Assets/Sprites/background-day.png",
-	"../Assets/Sprites/background-night.png",
-	"../Assets/Sprites/base.png",
-	"../Assets/Sprites/bluebird-downflap.png",
-	"../Assets/Sprites/gameover.png",
-	"../Assets/Sprites/message.png",
-	"../Assets/Sprites/pipe-green-flip.png",
-	"../Assets/Sprites/pipe-green.png",
-	"../Assets/Sprites/pipe-red.png",
-	"../Assets/Sprites/redbird-downflap.png",
-	"../Assets/Sprites/redbird-midflap.png",
-	"../Assets/Sprites/redbird-upflap.png",
-	"../Assets/Sprites/yellowbird-downflap.png",
-	"../Assets/Sprites/yellowbird-midflap.png",
-	"../Assets/Sprites/yellowbird-upflap.png",
-	"../Assets/Backgrounds/citybackground2.png",
-];
-const Assets = {};
-let loadedAssets = false;
-async function LoadAssets(AssetList) {
-	const loadedImages = [];
-	for (let source in AssetList) {
-		await new Promise((resolve, reject) => {
-			const Asset = new Image();
-			Asset.src = AssetList[source];
-			const percentage = (source / (AssetList.length - 1)) * 100;
-			getID("currentAssetText").innerHTML = AssetList[source].replace(
-				"../Assets/",
-				""
-			);
-
-			Asset.addEventListener("load", () => {
-				Assets[AssetList[source].replace("../Assets/", "")] = Asset;
-				getID("progressFill").style.width = `${percentage}%`;
-
-				resolve();
-			});
-			Asset.onerror = reject;
-		});
-	}
-	return Assets;
-}
-LoadAssets(AssetsList).then((Assets) => {
-	loadedAssets = true;
-	myEnvironment.meta.Assets = Assets;
-	getID("startGameButton").setAttribute("active", "true");
-});
 
 //Game
 

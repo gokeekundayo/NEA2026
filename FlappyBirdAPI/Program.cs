@@ -39,6 +39,7 @@ app.MapControllers();
 app.UseRouting();
 // Map SignalR hub
 app.MapHub<AssetsHub>("/assetsHub");
+app.MapHub<GameHub>("/gameHub");
 
 // Sample weather endpoint
 var summaries = new[]

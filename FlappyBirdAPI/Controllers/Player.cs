@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace FlappyBirdAPI.Controllers
 {
     public class Player
@@ -5,7 +7,8 @@ namespace FlappyBirdAPI.Controllers
         public string ConnectionID { get; set; }
         public string Username { get; set; }
         public int Score { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+
+        public Dictionary<string, int>? Velocity { get; set; }
+        public Dictionary<string, int>? Position { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using FlappyBirdAPI.Controllers;
+using System.Numerics;
 namespace FlappyBirdAPI.Hubs
 {
     public class GameHub : Hub
@@ -13,7 +14,19 @@ namespace FlappyBirdAPI.Hubs
             {
                 ConnectionID = Context.ConnectionId,
                 Username = username,
-                Score = 0
+                Score = 0,
+                Velocity = new Dictionary<string, int>
+                {
+                    { "X", 0 },
+                    { "Y", 0 }
+                },
+                Position = new Dictionary<string, int>
+                {
+                    { "X", 0 },
+                    { "Y", 0 }
+                },
+
+
             };
             Console.WriteLine($"Player {username} joined the game with ConnectionID: {Context.ConnectionId}");
             await Clients.Caller.SendAsync("GameJoined", new Dictionary<string, string>
@@ -25,6 +38,7 @@ namespace FlappyBirdAPI.Hubs
         public async Task GetPlayers(string username)
         {
             await Clients.Caller.SendAsync("PlayerList", PlayerList);
+            Console.WriteLine($"Sent player list to {username}");
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {

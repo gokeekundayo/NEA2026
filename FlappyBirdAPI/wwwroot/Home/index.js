@@ -13,6 +13,7 @@ import { getID } from "../Engine/Tools/Tools.js";
 import { GetAssetList, LoadAssets } from "./assets.js";
 import { connection } from "../Engine/Tools/Connection.js";
 import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
+import { GameHubRequest } from "./multiplayer.js";
 let loadedAssets = false;
 connection
 	.start()
@@ -89,6 +90,7 @@ function startGame() {
 		rotation: 0,
 	}); */
 	//Initialisation
+	
 	let myFlappyBird = new ImageObject({
 		mass: 2,
 		position: { x: 100, y: 200 },
@@ -185,6 +187,17 @@ function startGame() {
 			currentBottomPipe.forceAspectRatio = false;
 			myEnvironment.pipes.push(currentTopPipe);
 			myEnvironment.pipes.push(currentBottomPipe);
+
+			GameHubRequest.send("PlayerUpdate",[{
+				position:{
+					x:myFlappyBird.position.x,
+					y:myFlappyBird.position.y
+				},
+				velocity:{
+					x:myFlappyBird.velocity.x,
+					y:myFlappyBird.velocity.y
+				}
+			}])
 		},
 	});
 	//Constantly update Environment

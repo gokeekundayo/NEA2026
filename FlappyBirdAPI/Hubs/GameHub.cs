@@ -29,7 +29,7 @@ namespace FlappyBirdAPI.Hubs
 
             };
             Console.WriteLine($"Player {username} joined the game with ConnectionID: {Context.ConnectionId}");
-            await Clients.Caller.SendAsync("GameJoined", new Dictionary<string, string>
+            await Clients.All.SendAsync("GameJoined", new Dictionary<string, string>
             {
                 { "ConnectionID", Context.ConnectionId },
                 { "Username", username }
@@ -40,6 +40,10 @@ namespace FlappyBirdAPI.Hubs
             await Clients.Caller.SendAsync("PlayerList", PlayerList);
             Console.WriteLine($"Sent player list to {username}");
         }
+         public async Task PlayerUpdate(Dictionary<string, Dictionary<string, int>> props)
+        {
+            Console.WriteLine("d");
+        }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             if (PlayerList.ContainsKey(Context.ConnectionId))
@@ -49,6 +53,7 @@ namespace FlappyBirdAPI.Hubs
             }
             await base.OnDisconnectedAsync(exception);
         }
+       
 
 
 

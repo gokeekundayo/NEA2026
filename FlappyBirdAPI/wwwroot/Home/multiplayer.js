@@ -4,7 +4,7 @@ import { myEnvironment } from "./index.js";
 const connection = new signalR.HubConnectionBuilder()
 	.withUrl("/gameHub") // your API URL
 	.build();
-const GameHubRequest = new ServerRequest(connection);
+export const GameHubRequest = new ServerRequest(connection);
 let connectionID;
 GameHubRequest.addEventListener("PlayerList", (PlayerList) => {
 	console.log("Current Players:", PlayerList);
@@ -21,11 +21,12 @@ GameHubRequest.addEventListener("PlayerList", (PlayerList) => {
 			velocity: { x: 0, y: 0 },
 			base: myEnvironment.base,
 			sizeX: 70,
-			sizeY: 70,
+			sizeY: 70 ,  
 			resistance: -1,
 			environment: myEnvironment,
 			src: "flappybirdskin.png",
 			rotation: 0,
+			
 		});
 		console.log(newPlayer.imageElement);
 	});
@@ -36,7 +37,7 @@ GameHubRequest.addEventListener("GameJoined", (message) => {
 connection
 	.start()
 	.then(() => {
-		GameHubRequest.send("JoinGame", ["Player1"]);
+		GameHubRequest.send("JoinGame", ["Player2"]);
 		GameHubRequest.send("GetPlayers", ["Player1"]);
 	})
 	.catch((err) => console.error(err));

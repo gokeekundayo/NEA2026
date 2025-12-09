@@ -7,7 +7,7 @@ export default class ImageObject extends SquareObject {
 		this.forceAspectRatio = true;
 		this.forceActualImage;
 		this.imageElement = this.environment.meta.Assets[this.src];
-
+		
 		this.initialAspectRatio =
 			this.imageElement.width / this.imageElement.height;
 	}
@@ -33,7 +33,8 @@ export default class ImageObject extends SquareObject {
 				this.imageElement.height
 			);
 		} else {
-			if (this.forceAspectRatio) {
+			if (this.forceAspectRatio) { 
+				
 				let drawSizeX = this.sizeY * this.initialAspectRatio;
 				context.drawImage(
 					this.imageElement,

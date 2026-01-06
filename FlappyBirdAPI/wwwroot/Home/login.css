@@ -1,0 +1,26 @@
+#introScreen{
+    display:none;
+}
+#loginPage{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    border:2px solid black;
+    padding: 5px;
+    border-radius:10px;
+    text-align: center;
+    width: fit-content;
+    align-content: center;
+}
+#loginButton{
+    text-align:center;
+    scale:0;
+    position:absolute;
+    transition:0.2s;
+}
+#loginButton[valid="true"]{
+    scale:1;
+    display:inline;
+    position:static;
+}

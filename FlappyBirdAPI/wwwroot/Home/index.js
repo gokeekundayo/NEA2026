@@ -71,7 +71,10 @@ getID("backButton").addEventListener("click", () => {
 	routes[pageOrder[pageOrder.length - 1]].style.display = "grid"; //Show previous page
 });
 ////Initial Page Setup
-routes["Home"].style.display = "grid"; //Start with Home/Intro screen
+getID("loginButton").addEventListener("click",()=>{
+	getID("loginPage").style.display = "none"
+})
+ //Start with Home/Intro screen
 
 //Game
 

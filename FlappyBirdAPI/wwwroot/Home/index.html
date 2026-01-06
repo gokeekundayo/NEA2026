@@ -9,9 +9,16 @@
 		<link rel="stylesheet" href="index.css" />
 		<link rel="stylesheet" href="HomeScreen.css" />
 		<link rel="stylesheet" href="SettingsScreen.css" />
+		<link rel="stylesheet" href="login.css">
 		<title>Physics Engine</title>
 	</head>
 	<body>
+		<div id="loginPage" >
+			<input type="text" id="usernameInput" placeholder="Enter your username">
+			<button id="loginButton" route="Home">Login</button>
+			</div>
+
+		</div>
 		<div id="introScreen" page="Home">
 			<div id="backButton">Back</div>
 
@@ -121,5 +128,6 @@
 		<script src="index.js" type="module"></script>
 		<script src="settings.js" type="module"></script>
 		<script src="multiplayer.js" type="module"></script>
+		<script type="module" src="login.js"></script>
 	</body>
 </html>

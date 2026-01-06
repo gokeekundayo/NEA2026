@@ -1,5 +1,6 @@
 import ImageObject from "../Engine/Generics/ImageObject.js";
 import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
+import { getID } from "../Engine/Tools/Tools.js";
 import { myEnvironment } from "./index.js";
 const connection = new signalR.HubConnectionBuilder()
 	.withUrl("/gameHub") // your API URL
@@ -36,7 +37,9 @@ GameHubRequest.addEventListener("GameJoined", (message) => {
 connection
 	.start()
 	.then(() => {
-		GameHubRequest.send("JoinGame", ["Player1"]);
-		GameHubRequest.send("GetPlayers", ["Player1"]);
+		getID("loginButton").addEventListener("click",()=>{
+			GameHubRequest.send("JoinGame", [getID("usernameInput").value]);
+		GameHubRequest.send("GetPlayers", [getID("usernameInput").value]);
+		})
 	})
 	.catch((err) => console.error(err));

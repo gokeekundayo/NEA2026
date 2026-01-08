@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="HomeScreen.css" />
 		<link rel="stylesheet" href="SettingsScreen.css" />
 		<link rel="stylesheet" href="login.css">
+		<link rel="stylesheet" href="multiplayer.css">
 		<title>Physics Engine</title>
 	</head>
 	<body>
@@ -30,7 +31,7 @@
 			</div>
 
 			<div id="menuItems">
-				<div class="menuButton" id="startGameButton" route="GameScreen">
+				<div class="menuButton" id="startGameButton" route="Multiplayer">
 					Start Game
 				</div>
 				<div
@@ -48,6 +49,19 @@
 					<div id="progressFill"></div>
 				</div>
 				<div id="progressInfo">Loading: <b id="currentAssetText"></b></div>
+			</div>
+		</div>
+		<div id="multiplayerScreen" page="Multiplayer" class="routePage">
+			<div id="roomList">
+				<!-- Rooms will be dynamically added here -->
+				<div class="roomContainer"> 
+					<div class="roomInfo">
+						<div class="roomName roomItem" >Room 1</div>
+						<div class="roomPlayers roomItem">Players: 1/4</div>
+					</div>
+						<div class="joinButtonContainer" ><button class="joinButton">Join</button></div>
+				</div>
+			
 			</div>
 		</div>
 		<div id="GameScreen" page="GameScreen"></div>

@@ -64,6 +64,14 @@ for (let route of allRouteLinks) {
 		pageOrder.push(targetPage);
 	});
 }
+export function takeRoute(source) {
+	let targetPage = source.getAttribute("route");
+
+	routes[pageOrder[pageOrder.length - 1]].style.display = "none";
+	routes[targetPage].style.display = "grid";
+	routes[targetPage].prepend(getID("backButton"));
+	pageOrder.push(targetPage);
+}
 getID("backButton").addEventListener("click", () => {
 	if (pageOrder.length <= 1) return; //No more pages to go back to
 	routes[pageOrder[pageOrder.length - 1]].style.display = "none"; //Hide current page
@@ -71,14 +79,14 @@ getID("backButton").addEventListener("click", () => {
 	routes[pageOrder[pageOrder.length - 1]].style.display = "grid"; //Show previous page
 });
 ////Initial Page Setup
-getID("loginButton").addEventListener("click",()=>{
-	getID("loginPage").style.display = "none"
-})
- //Start with Home/Intro screen
+getID("loginButton").addEventListener("click", () => {
+	getID("loginPage").style.display = "none";
+});
+//Start with Home/Intro screen
 
 //Game
 
-function startGame() {
+export function startGame() {
 	/* let cityBackground = new ImageObject({
 		mass: 2,
 		position: { x: 0, y: 0 },
@@ -104,7 +112,7 @@ function startGame() {
 		src: "flappybirdskin.png",
 		rotation: 0,
 	});
-
+	myEnvironment.meta.player = myFlappyBird;
 	let myScore = new TextObject({
 		text: "0",
 		color: "#850707FF",
@@ -188,6 +196,7 @@ function startGame() {
 			currentBottomPipe.forceAspectRatio = false;
 			myEnvironment.pipes.push(currentTopPipe);
 			myEnvironment.pipes.push(currentBottomPipe);
+			//Updating on backend
 		},
 	});
 	//Constantly update Environment
@@ -221,7 +230,7 @@ function startGame() {
 getID("startGameButton").addEventListener("click", () => {
 	if (!loadedAssets) return;
 
-	startGame();
+	//startGame();
 });
 /* const myObject1 = new SquareObject({
 	mass: 2,

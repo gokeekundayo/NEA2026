@@ -5,3 +5,11 @@ $IDEA: Make a custom back button for each page
     - Style Button by .backButton class
     - When moving to a new page:
         - Clone Back button and add to new page
+
+
+
+
+$HELP:
+-> Back Buton Styling: The backbutton can be styled differently depending on the active page (onScreen)
+    - This works because the back button is automatically appended to the active page
+    - Style it for each page by using the selector of the page > #backButton

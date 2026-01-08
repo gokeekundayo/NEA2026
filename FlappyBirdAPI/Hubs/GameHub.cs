@@ -3,8 +3,21 @@ using FlappyBirdAPI.Controllers;
 using System.Numerics;
 namespace FlappyBirdAPI.Hubs
 {
+
     public class GameHub : Hub
     {
+        //
+        private readonly static GameRoom Room1 = new GameRoom
+        {
+            RoomID = "room1",
+            RoomName = "First Room",
+            MaxPlayers = 4,
+            Players = new Dictionary<string, Player>()
+        };
+        private readonly static List<GameRoom> GameRooms = new List<GameRoom>
+        {
+            Room1
+        };
         private readonly static Dictionary<string, Player> PlayerList = new Dictionary<string, Player>();
         // GameHub methods will go here
         public async Task JoinGame(string username
@@ -15,12 +28,12 @@ namespace FlappyBirdAPI.Hubs
                 ConnectionID = Context.ConnectionId,
                 Username = username,
                 Score = 0,
-                Velocity = new Dictionary<string, int>
+                Velocity = new Dictionary<string, float>
                 {
                     { "X", 0 },
                     { "Y", 0 }
                 },
-                Position = new Dictionary<string, int>
+                Position = new Dictionary<string, float>
                 {
                     { "X", 0 },
                     { "Y", 0 }
@@ -40,13 +53,78 @@ namespace FlappyBirdAPI.Hubs
             await Clients.Caller.SendAsync("PlayerList", PlayerList);
             Console.WriteLine($"Sent player list to {username}");
         }
+
+        public async Task GetRoomList()
+        {
+            await Clients.Caller.SendAsync("ReceiveRoomList", GameRooms);
+        }
+        public async Task<Dictionary<string, object>> JoinRoom(string roomId, string username)
+        {
+
+            var room = GameRooms.Find(r => r.RoomID == roomId);
+            if (room != null && room.Players.Count < room.MaxPlayers)
+            {
+                var player = PlayerList[Context.ConnectionId];
+                room.Players[Context.ConnectionId] = player;
+                player.CurrentRoomID = room.RoomID;
+                Console.WriteLine($"Player {username} joined room {room.RoomName}");
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+
+                await Clients.OthersInGroup(roomId).SendAsync("OtherJoinedRoom", room);
+                return new Dictionary<string, object>()
+                {
+                    { "valid", true },
+                    {"room", room },
+                    {"size", room.Players.Count}
+
+                };
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("RoomFull", roomId);
+                return new Dictionary<string, object>()
+                {
+                    { "valid", false },
+                    {"room", "room" }
+
+                }; //Crashes for some reason
+            }
+        }
+        public async Task UpdatePosition(string connectionId, Dictionary<string, float> position)//Ensure this stays as <string, float>
+        {
+            //     Console.WriteLine("testing");
+            if (PlayerList.ContainsKey(connectionId))
+            {
+                PlayerList[connectionId].Position["X"] = position["X"];
+                PlayerList[connectionId].Position["Y"] = position["Y"];
+                // Notify all clients about the position update
+                await Clients.Others.SendAsync("PlayerUpdated", connectionId, position);
+                //Console.WriteLine($"Updated position for player {connectionId} to X: {position["X"]}, Y: {position["Y"]}");
+            }
+
+        }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             if (PlayerList.ContainsKey(Context.ConnectionId))
             {
-                PlayerList.Remove(Context.ConnectionId);
-                Console.WriteLine($"Player {Context.ConnectionId} disconnected and removed from PlayerList.");
+
+                Console.WriteLine("Current Players:" + Room1.Players.Count);
+                Console.WriteLine("Current Players:" + Room1.Players.Count);
+                var player = PlayerList[Context.ConnectionId];
+                // Remove player from any room they are in
+                if (player.CurrentRoomID != null)
+                {
+                    var room = GameRooms.Find(r => r.RoomID == player.CurrentRoomID);
+                    if (room != null && room.Players.ContainsKey(Context.ConnectionId))
+                    {
+                        room.Players.Remove(Context.ConnectionId);
+                        await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.RoomID);
+                        await Clients.OthersInGroup(room.RoomID).SendAsync("PlayerLeft", Context.ConnectionId);
+                        Console.WriteLine($"Player {player.Username} left room {room.RoomName}");
+                    }
+                }
             }
+
             await base.OnDisconnectedAsync(exception);
         }
 

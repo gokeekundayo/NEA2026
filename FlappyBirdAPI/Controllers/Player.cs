@@ -10,7 +10,6 @@ namespace FlappyBirdAPI.Controllers
         public List<Skin> Skins { get; } = new List<Skin>();
         public string? CurrentRoomID { get; set; }
         public Skin CurrentSkin { get; }
-
         public Dictionary<string, float>? Velocity { get; set; }
         public Dictionary<string, float>? Position { get; set; }
     }

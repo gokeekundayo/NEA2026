@@ -1,7 +1,7 @@
 //
-import { connection } from "../Engine/Tools/Connection.js";
-import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
-import { getID } from "../Engine/Tools/Tools.js";
+import { connection } from "../../Engine/Tools/Connection.js";
+import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
+import { getID } from "../../Engine/Tools/Tools.js";
 export async function GetAssetList(assetRequest) {
 	let assetList;
 	await new Promise((resolve, reject) => {

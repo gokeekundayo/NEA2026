@@ -1,18 +1,18 @@
-import Environment from "../Engine/Environment.js";
-import EPEStore from "../Engine/EPEStore.js";
-import GenericObject from "../Engine/GenericObject.js";
-import CircleObject from "../Engine/Generics/CircleObject.js";
-import GraphBar from "../Engine/Generics/GraphBar.js";
-import GraphObject from "../Engine/Generics/GraphObject.js";
-import ImageObject from "../Engine/Generics/ImageObject.js";
-import SquareObject from "../Engine/Generics/SquareObject.js";
-import { TextObject } from "../Engine/Generics/TextObject.js";
-import { GPEStore } from "../Engine/GPEStore.js";
-import KEStore from "../Engine/KEStore.js";
-import { getID } from "../Engine/Tools/Tools.js";
+import Environment from "../../Engine/Environment.js";
+import EPEStore from "../../Engine/EPEStore.js";
+import GenericObject from "../../Engine/GenericObject.js";
+import CircleObject from "../../Engine/Generics/CircleObject.js";
+import GraphBar from "../../Engine/Generics/GraphBar.js";
+import GraphObject from "../../Engine/Generics/GraphObject.js";
+import ImageObject from "../../Engine/Generics/ImageObject.js";
+import SquareObject from "../../Engine/Generics/SquareObject.js";
+import { TextObject } from "../../Engine/Generics/TextObject.js";
+import { GPEStore } from "../../Engine/GPEStore.js";
+import KEStore from "../../Engine/KEStore.js";
+import { getID } from "../../Engine/Tools/Tools.js";
 import { GetAssetList, LoadAssets } from "./assets.js";
-import { connection } from "../Engine/Tools/Connection.js";
-import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
+import { connection } from "../../Engine/Tools/Connection.js";
+import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
 let loadedAssets = false;
 connection
 	.start()
@@ -72,6 +72,12 @@ export function takeRoute(source) {
 	routes[targetPage].prepend(getID("backButton"));
 	pageOrder.push(targetPage);
 }
+export function goToRoute(target) {
+	routes[pageOrder[pageOrder.length - 1]].style.display = "none";
+	routes[target].style.display = "grid";
+	routes[target].prepend(getID("backButton"));
+	pageOrder.push(target);
+}
 getID("backButton").addEventListener("click", () => {
 	if (pageOrder.length <= 1) return; //No more pages to go back to
 	routes[pageOrder[pageOrder.length - 1]].style.display = "none"; //Hide current page
@@ -81,6 +87,8 @@ getID("backButton").addEventListener("click", () => {
 ////Initial Page Setup
 getID("loginButton").addEventListener("click", () => {
 	getID("loginPage").style.display = "none";
+	/* goToRoute("GameScreen"); //Start with Game Screen for testing
+	startGame(); */
 });
 //Start with Home/Intro screen
 
@@ -232,6 +240,7 @@ getID("startGameButton").addEventListener("click", () => {
 
 	//startGame();
 });
+
 /* const myObject1 = new SquareObject({
 	mass: 2,
 	position: { x: 100, y: -100 },

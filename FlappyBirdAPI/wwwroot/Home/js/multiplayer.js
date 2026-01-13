@@ -1,7 +1,8 @@
-import ImageObject from "../Engine/Generics/ImageObject.js";
-import { Room } from "../Engine/Tools/Room.js";
-import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
-import { getID } from "../Engine/Tools/Tools.js";
+import ImageObject from "../../Engine/Generics/ImageObject.js";
+import { PlayerScore } from "../../Engine/Tools/PlayerScore.js";
+import { Room } from "../../Engine/Tools/Room.js";
+import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
+import { getID } from "../../Engine/Tools/Tools.js";
 import { myEnvironment, startGame, takeRoute } from "./index.js";
 const connection = new signalR.HubConnectionBuilder()
 	.withUrl("/gameHub") // your API URL
@@ -18,7 +19,7 @@ GameHubRequest.addEventListener("PlayerList", (PlayerList) => {
 			return;
 			console.log(myEnvironment.meta);
 		}
-		let newPlayer = new ImageObject({
+		/* let newPlayer = new ImageObject({
 			mass: 2,
 			position: { x: player.position.X, y: player.position.Y },
 			velocity: { x: 0, y: 0 },
@@ -30,7 +31,7 @@ GameHubRequest.addEventListener("PlayerList", (PlayerList) => {
 			src: "flappybirdskin.png",
 			rotation: 0,
 			meta: { connectionId: connectionId },
-		});
+		}); */
 		console.log(newPlayer.imageElement);
 		//
 	});
@@ -85,6 +86,7 @@ connection.start().then(() => {
 				name: room.roomName,
 				maxPlayers: room.maxPlayers,
 				currentPlayers: room.players,
+				scores: {},
 			});
 			currentRoom.element
 				.querySelector(".joinButton")
@@ -107,9 +109,58 @@ connection.start().then(() => {
 								)[0].innerText =
 									"Players: " + response.size + "/" + room.maxPlayers;
 							}
-							takeRoute(currentRoom.element.querySelector(".joinButton"));
+							takeRoute(currentRoom.element.querySelector(".joinButton")); //Entering the room environment on the frontend
+							startGame();
+							Object.entries(response.room.players).forEach(
+								([playerConnectionID, player]) => {
+									if (playerConnectionID == connectionID) {
+										return;
+									}
+									let scoreElement = new PlayerScore(
+										player.username,
+										player.score
+									);
+									getID("scoresContainer").appendChild(scoreElement.element);
+								}
+							);
+							//Start updating scores
+							myEnvironment.update({
+								interval: 1750 / 1000,
+								start: () => {
+									console.log(myEnvironment.meta.score);
+
+									if (myEnvironment.meta.score) {
+										//console.log(myEnvironment.meta);})
+										GameHubRequest.send("UpdateScore", [
+											connectionID,
+											myEnvironment.meta.score,
+										]);
+									}
+								},
+							});
 						});
+					GameHubRequest.addEventListener(
+						"PlayerScoreUpdated",
+						(connectionId, score) => {
+							console.log(currentRoom.scores);
+
+							if (currentRoom.scores[connectionId]) {
+								currentRoom.scores[connectionId].updateScore(Number(score));
+							} else {
+								currentRoom.scores[connectionId] = new PlayerScore(
+									currentRoom.currentPlayers[connectionId].username,
+									Number(score)
+								);
+
+								getID("scoresContainer").appendChild(
+									currentRoom.scores[connectionId].element
+								);
+							}
+						}
+						//Current bug is that this refreshes all scores when a new player score is added, rather than synchrronizing existing scores only
+					);
 				});
 		});
 	});
 });
+//Adding player scores

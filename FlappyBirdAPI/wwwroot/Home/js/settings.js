@@ -1,4 +1,4 @@
-import { getID } from "../Engine/Tools/Tools.js";
+import { getID } from "../../Engine/Tools/Tools.js";
 let settingsButtons = document.querySelectorAll("[settingName]");
 let settingPageElements = document.querySelectorAll(".settingPage");
 const settingsPages = {};

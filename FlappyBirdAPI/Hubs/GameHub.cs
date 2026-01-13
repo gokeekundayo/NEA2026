@@ -128,7 +128,15 @@ namespace FlappyBirdAPI.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-
+        public async Task UpdateScore(string connectionId, int score)
+        {
+            if (PlayerList.ContainsKey(connectionId))
+            {
+                Console.WriteLine($"Updating score for player {connectionId} to {score}");
+                PlayerList[connectionId].Score = score;
+                await Clients.Others.SendAsync("PlayerScoreUpdated", connectionId, score);
+            }
+        }
 
     }
 }

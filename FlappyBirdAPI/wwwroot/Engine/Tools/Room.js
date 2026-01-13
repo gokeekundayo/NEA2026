@@ -1,11 +1,12 @@
 export class Room {
-	constructor({ parent, ID, name, maxPlayers, currentPlayers }) {
+	constructor({ parent, ID, name, maxPlayers, currentPlayers, scores }) {
 		this.parent = parent;
 		this.ID = ID;
 		this.name = name;
 		this.maxPlayers = maxPlayers;
 		this.currentPlayers = currentPlayers;
 		//
+		this.scores = scores ?? {};
 
 		this.element = document.createElement("div");
 		this.element.classList.add("roomContainer");

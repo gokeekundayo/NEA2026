@@ -4,13 +4,14 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="fonts.css" />
+		<link rel="stylesheet" href="./css/fonts.css" />
 
-		<link rel="stylesheet" href="index.css" />
-		<link rel="stylesheet" href="HomeScreen.css" />
-		<link rel="stylesheet" href="SettingsScreen.css" />
-		<link rel="stylesheet" href="login.css">
-		<link rel="stylesheet" href="multiplayer.css">
+		<link rel="stylesheet" href="./css/index.css" />
+		<link rel="stylesheet" href="./css/HomeScreen.css" />
+		<link rel="stylesheet" href="./css/SettingsScreen.css" />
+		<link rel="stylesheet" href="./css/login.css">
+		<link rel="stylesheet" href="./css/multiplayer.css">
+		<link rel="stylesheet" href="./css/scores.css">
 		<title>Physics Engine</title>
 	</head>
 	<body>
@@ -54,18 +55,15 @@
 		<div id="multiplayerScreen" page="Multiplayer" class="routePage">
 			<div id="roomList">
 				<!-- Rooms will be dynamically added here -->
-				<div class="roomContainer"> 
-					<div class="roomInfo">
-						<div class="roomName roomItem" >Room 1</div>
-						<div class="roomPlayers roomItem">Players: 1/4</div>
-					</div>
-						<div class="joinButtonContainer" ><button class="joinButton">Join</button></div>
-				</div>
-			
+				
 			</div>
 		</div>
-		<div id="GameScreen" page="GameScreen"></div>
-
+		<div id="GameScreen" page="GameScreen">
+			<div id="scoresContainer">
+			
+		</div>
+		</div>
+		
 		<div id="settingsScreen" page="Settings">
 			<div id="settingsNavBar">
 				<div
@@ -138,10 +136,10 @@
 		<script src="../Engine/Tools/signalr.min.js"></script>
 
 		<script src="../Engine/Tools/Connection.js" type="module"></script>
-		<script src="assets.js" type="module"></script>
-		<script src="index.js" type="module"></script>
-		<script src="settings.js" type="module"></script>
-		<script src="multiplayer.js" type="module"></script>
-		<script type="module" src="login.js"></script>
+		<script src="./js/assets.js" type="module"></script>
+		<script src="./js/index.js" type="module"></script>
+		<script src="./js/settings.js" type="module"></script>
+		<script src="./js/multiplayer.js" type="module"></script>
+		<script type="module" src="./js/login.js"></script>
 	</body>
 </html>

@@ -10,6 +10,7 @@ const connection = new signalR.HubConnectionBuilder()
 const GameHubRequest = new ServerRequest(connection);
 let connectionID;
 let playerList;
+let currentRoomLocal;
 GameHubRequest.addEventListener("PlayerList", (PlayerList) => {
 	console.log("Current Players:", PlayerList);
 	Object.entries(PlayerList).forEach(([connectionId, player]) => {
@@ -78,7 +79,7 @@ connection.start().then(() => {
 	GameHubRequest.addEventListener("ReceiveRoomList", (rooms) => {
 		//Create HTML Element
 		console.log(rooms);
-
+		
 		rooms.forEach((room) => {
 			let currentRoom = new Room({
 				parent: getID("roomList"),
@@ -88,57 +89,83 @@ connection.start().then(() => {
 				currentPlayers: room.players,
 				scores: {},
 			});
+			currentRoomLocal = currentRoom
 			currentRoom.element
 				.querySelector(".joinButton")
 				.addEventListener("click", () => {
 					console.log(username);
-
+					////
 					connection
 						.invoke("JoinRoom", room.roomID, username)
-						.then((response) => {
-							console.log(response);
+					
+					///
+					GameHubRequest.addEventListener("JoinRoom",(response)=>{
+						console.log(response);
+						//Check if this client that joined
+						if (response.valid) {
+							
+						if(response.source.connectionID==connectionID){
 
-							if (response.valid) {
-								console.log("Joined Room:", room.roomID);
-								console.log(
-									currentRoom.element.querySelectorAll(".roomPlayers")
-								);
-
-								currentRoom.element.querySelectorAll(
-									".roomPlayers"
-								)[0].innerText =
-									"Players: " + response.size + "/" + room.maxPlayers;
-							}
-							takeRoute(currentRoom.element.querySelector(".joinButton")); //Entering the room environment on the frontend
-							startGame();
-							Object.entries(response.room.players).forEach(
-								([playerConnectionID, player]) => {
-									if (playerConnectionID == connectionID) {
-										return;
-									}
-									let scoreElement = new PlayerScore(
-										player.username,
-										player.score
-									);
-									getID("scoresContainer").appendChild(scoreElement.element);
-								}
+							console.log("Joined Room:", room.roomID);
+							console.log(
+								currentRoom.element.querySelectorAll(".roomPlayers")
 							);
-							//Start updating scores
-							myEnvironment.update({
-								interval: 1750 / 1000,
-								start: () => {
-									console.log(myEnvironment.meta.score);
 
-									if (myEnvironment.meta.score) {
-										//console.log(myEnvironment.meta);})
-										GameHubRequest.send("UpdateScore", [
-											connectionID,
-											myEnvironment.meta.score,
-										]);
-									}
-								},
-							});
+							currentRoom.element.querySelectorAll(
+								".roomPlayers"
+							)[0].innerText =
+								"Players: " + response.size + "/" + room.maxPlayers;
+						
+						takeRoute(currentRoom.element.querySelector(".joinButton")); //Entering the room environment on the frontend
+						startGame();
+						Object.entries(response.room.players).forEach(
+							([playerConnectionID, player]) => {
+								if (playerConnectionID == connectionID) {
+									return;
+								}
+								let scoreElement = new PlayerScore(
+									player.username,
+									player.score
+								);
+								getID("scoresContainer").appendChild(scoreElement.element);
+							}
+						);
+						//Start updating scores
+						myEnvironment.update({
+							interval: 1750 / 1000,
+							start: () => {
+								console.log(myEnvironment.meta.score);
+
+								if (myEnvironment.meta.score) {
+									//console.log(myEnvironment.meta);})
+									GameHubRequest.send("UpdateScore", [
+										connectionID,
+										myEnvironment.meta.score,
+									]);
+								}
+							},
 						});
+					}
+					else{
+						//If other player joined room
+						currentRoom.scores[response.source.connectionID] = new PlayerScore(
+							currentRoom.currentPlayers[response.source.connectionID].username,
+							Number(score)
+						);
+
+						getID("scoresContainer").appendChild(
+							currentRoom.scores[response.source.connectionID].element
+						);
+						console.log(
+							"scoress"
+						)
+					}
+					
+						currentRoomLocal = currentRoom //This is the room that the current client has joined
+					}
+				
+					})
+						
 					GameHubRequest.addEventListener(
 						"PlayerScoreUpdated",
 						(connectionId, score) => {
@@ -156,11 +183,37 @@ connection.start().then(() => {
 									currentRoom.scores[connectionId].element
 								);
 							}
+							currentRoomLocal = currentRoom //This is the room that the current client has joined
+							
 						}
+						
 						//Current bug is that this refreshes all scores when a new player score is added, rather than synchrronizing existing scores only
 					);
+					GameHubRequest.addEventListener("OtherJoinedRoom",(room,source)=>{
+						
+						
+						console.log("hhh",source)
+						
+							currentRoom.scores[source] = new PlayerScore(
+								currentRoom.currentPlayers[source].username,
+								Number(score)
+							);
+
+							getID("scoresContainer").appendChild(
+								currentRoom.scores[source].element
+							);
+							console.log(
+								currentRoom.scores[source]
+							)
+							
+						
+					})
 				});
 		});
+
+		
 	});
+	
+
 });
 //Adding player scores

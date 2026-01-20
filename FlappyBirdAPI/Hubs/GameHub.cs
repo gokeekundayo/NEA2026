@@ -58,7 +58,7 @@ namespace FlappyBirdAPI.Hubs
         {
             await Clients.Caller.SendAsync("ReceiveRoomList", GameRooms);
         }
-        public async Task<Dictionary<string, object>> JoinRoom(string roomId, string username)
+        public async Task JoinRoom(string roomId, string username)
         {
 
             var room = GameRooms.Find(r => r.RoomID == roomId);
@@ -70,24 +70,25 @@ namespace FlappyBirdAPI.Hubs
                 Console.WriteLine($"Player {username} joined room {room.RoomName}");
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
 
-                await Clients.OthersInGroup(roomId).SendAsync("OtherJoinedRoom", room);
-                return new Dictionary<string, object>()
+                await Clients.Group(roomId).SendAsync("JoinRoom", new Dictionary<string, object>()
                 {
                     { "valid", true },
                     {"room", room },
-                    {"size", room.Players.Count}
+                    {"size", room.Players.Count},
+                    {"source", player}
 
-                };
+                });
+
             }
             else
             {
-                await Clients.Caller.SendAsync("RoomFull", roomId);
-                return new Dictionary<string, object>()
+                await Clients.Caller.SendAsync("RoomFull", new Dictionary<string, object>()
                 {
                     { "valid", false },
                     {"room", "room" }
 
-                }; //Crashes for some reason
+                });
+                //Crashes for some reason
             }
         }
         public async Task UpdatePosition(string connectionId, Dictionary<string, float> position)//Ensure this stays as <string, float>
@@ -132,7 +133,7 @@ namespace FlappyBirdAPI.Hubs
         {
             if (PlayerList.ContainsKey(connectionId))
             {
-                Console.WriteLine($"Updating score for player {connectionId} to {score}");
+                //Console.WriteLine($"Updating score for player {connectionId} to {score}");
                 PlayerList[connectionId].Score = score;
                 await Clients.Others.SendAsync("PlayerScoreUpdated", connectionId, score);
             }

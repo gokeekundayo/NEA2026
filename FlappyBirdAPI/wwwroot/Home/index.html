@@ -4,14 +4,23 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="fonts.css" />
+		<link rel="stylesheet" href="./css/fonts.css" />
 
-		<link rel="stylesheet" href="index.css" />
-		<link rel="stylesheet" href="HomeScreen.css" />
-		<link rel="stylesheet" href="SettingsScreen.css" />
+		<link rel="stylesheet" href="./css/index.css" />
+		<link rel="stylesheet" href="./css/HomeScreen.css" />
+		<link rel="stylesheet" href="./css/SettingsScreen.css" />
+		<link rel="stylesheet" href="./css/login.css">
+		<link rel="stylesheet" href="./css/multiplayer.css">
+		<link rel="stylesheet" href="./css/scores.css">
 		<title>Physics Engine</title>
 	</head>
 	<body>
+		<div id="loginPage" >
+			<input type="text" id="usernameInput" placeholder="Enter your username">
+			<button id="loginButton" route="Home">Login</button>
+			</div>
+
+		</div>
 		<div id="introScreen" page="Home">
 			<div id="backButton">Back</div>
 
@@ -23,7 +32,7 @@
 			</div>
 
 			<div id="menuItems">
-				<div class="menuButton" id="startGameButton" route="GameScreen">
+				<div class="menuButton" id="startGameButton" route="Multiplayer">
 					Start Game
 				</div>
 				<div
@@ -43,8 +52,18 @@
 				<div id="progressInfo">Loading: <b id="currentAssetText"></b></div>
 			</div>
 		</div>
-		<div id="GameScreen" page="GameScreen"></div>
-
+		<div id="multiplayerScreen" page="Multiplayer" class="routePage">
+			<div id="roomList">
+				<!-- Rooms will be dynamically added here -->
+				
+			</div>
+		</div>
+		<div id="GameScreen" page="GameScreen">
+			<div id="scoresContainer">
+			
+		</div>
+		</div>
+		
 		<div id="settingsScreen" page="Settings">
 			<div id="settingsNavBar">
 				<div
@@ -116,11 +135,20 @@
 		</div>
 		<script src="../Engine/Tools/signalr.min.js"></script>
 
+<<<<<<< HEAD
 		<script src="../Engine/Too
 		ls/Connection.js" type="module"></script>
 		<script src="assets.js" type="module"></script>
 		<script src="index.js" type="module"></script>
 		<script src="settings.js" type="module"></script>
 		<script src="multiplayer.js" type="module"></script>
+=======
+		<script src="../Engine/Tools/Connection.js" type="module"></script>
+		<script src="./js/assets.js" type="module"></script>
+		<script src="./js/index.js" type="module"></script>
+		<script src="./js/settings.js" type="module"></script>
+		<script src="./js/multiplayer.js" type="module"></script>
+		<script type="module" src="./js/login.js"></script>
+>>>>>>> 3c2be098ff81eac5e0f92e64a3cf5f91567f795d
 	</body>
 </html>

@@ -1,0 +1,27 @@
+.roomContainer {
+	border-block: 2px solid rgba(0, 0, 0, 0.144);
+	padding-block: 7px;
+	margin: auto;
+	font-family: SupplyCenter;
+}
+#roomList {
+	width: 100vw;
+	height: 100vh;
+	box-sizing: border-box;
+	padding: 10px;
+}
+.roomItem {
+	margin: 7px;
+}
+.joinButton {
+	font-family: SupplyCenter;
+	padding: 7px;
+	font-size: 16px;
+	cursor: pointer;
+}
+.joinButtonContainer {
+	text-align: right;
+}
+#multiplayerScreen > #backButton {
+	bottom: 0;
+}

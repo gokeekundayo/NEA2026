@@ -1,19 +1,24 @@
-import Environment from "../Engine/Environment.js";
-import EPEStore from "../Engine/EPEStore.js";
-import GenericObject from "../Engine/GenericObject.js";
-import CircleObject from "../Engine/Generics/CircleObject.js";
-import GraphBar from "../Engine/Generics/GraphBar.js";
-import GraphObject from "../Engine/Generics/GraphObject.js";
-import ImageObject from "../Engine/Generics/ImageObject.js";
-import SquareObject from "../Engine/Generics/SquareObject.js";
-import { TextObject } from "../Engine/Generics/TextObject.js";
-import { GPEStore } from "../Engine/GPEStore.js";
-import KEStore from "../Engine/KEStore.js";
-import { getID } from "../Engine/Tools/Tools.js";
+import Environment from "../../Engine/Environment.js";
+import EPEStore from "../../Engine/EPEStore.js";
+import GenericObject from "../../Engine/GenericObject.js";
+import CircleObject from "../../Engine/Generics/CircleObject.js";
+import GraphBar from "../../Engine/Generics/GraphBar.js";
+import GraphObject from "../../Engine/Generics/GraphObject.js";
+import ImageObject from "../../Engine/Generics/ImageObject.js";
+import SquareObject from "../../Engine/Generics/SquareObject.js";
+import { TextObject } from "../../Engine/Generics/TextObject.js";
+import { GPEStore } from "../../Engine/GPEStore.js";
+import KEStore from "../../Engine/KEStore.js";
+import { getID } from "../../Engine/Tools/Tools.js";
 import { GetAssetList, LoadAssets } from "./assets.js";
+<<<<<<< HEAD:FlappyBirdAPI/wwwroot/Home/index.js
 import { connection } from "../Engine/Tools/Connection.js";
 import { ServerRequest } from "../Engine/Tools/ServerRequest.js";
 import { GameHubRequest } from "./multiplayer.js";
+=======
+import { connection } from "../../Engine/Tools/Connection.js";
+import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
+>>>>>>> 3c2be098ff81eac5e0f92e64a3cf5f91567f795d:FlappyBirdAPI/wwwroot/Home/js/index.js
 let loadedAssets = false;
 connection
 	.start()
@@ -65,6 +70,20 @@ for (let route of allRouteLinks) {
 		pageOrder.push(targetPage);
 	});
 }
+export function takeRoute(source) {
+	let targetPage = source.getAttribute("route");
+
+	routes[pageOrder[pageOrder.length - 1]].style.display = "none";
+	routes[targetPage].style.display = "grid";
+	routes[targetPage].prepend(getID("backButton"));
+	pageOrder.push(targetPage);
+}
+export function goToRoute(target) {
+	routes[pageOrder[pageOrder.length - 1]].style.display = "none";
+	routes[target].style.display = "grid";
+	routes[target].prepend(getID("backButton"));
+	pageOrder.push(target);
+}
 getID("backButton").addEventListener("click", () => {
 	if (pageOrder.length <= 1) return; //No more pages to go back to
 	routes[pageOrder[pageOrder.length - 1]].style.display = "none"; //Hide current page
@@ -72,11 +91,16 @@ getID("backButton").addEventListener("click", () => {
 	routes[pageOrder[pageOrder.length - 1]].style.display = "grid"; //Show previous page
 });
 ////Initial Page Setup
-routes["Home"].style.display = "grid"; //Start with Home/Intro screen
+getID("loginButton").addEventListener("click", () => {
+	getID("loginPage").style.display = "none";
+	/* goToRoute("GameScreen"); //Start with Game Screen for testing
+	startGame(); */
+});
+//Start with Home/Intro screen
 
 //Game
 
-function startGame() {
+export function startGame() {
 	/* let cityBackground = new ImageObject({
 		mass: 2,
 		position: { x: 0, y: 0 },
@@ -103,7 +127,7 @@ function startGame() {
 		src: "flappybirdskin.png",
 		rotation: 0,
 	});
-
+	myEnvironment.meta.player = myFlappyBird;
 	let myScore = new TextObject({
 		text: "0",
 		color: "#850707FF",
@@ -187,6 +211,7 @@ function startGame() {
 			currentBottomPipe.forceAspectRatio = false;
 			myEnvironment.pipes.push(currentTopPipe);
 			myEnvironment.pipes.push(currentBottomPipe);
+<<<<<<< HEAD:FlappyBirdAPI/wwwroot/Home/index.js
 
 			GameHubRequest.send("PlayerUpdate",[{
 				position:{
@@ -198,6 +223,9 @@ function startGame() {
 					y:myFlappyBird.velocity.y
 				}
 			}])
+=======
+			//Updating on backend
+>>>>>>> 3c2be098ff81eac5e0f92e64a3cf5f91567f795d:FlappyBirdAPI/wwwroot/Home/js/index.js
 		},
 	});
 	//Constantly update Environment
@@ -231,8 +259,9 @@ function startGame() {
 getID("startGameButton").addEventListener("click", () => {
 	if (!loadedAssets) return;
 
-	startGame();
+	//startGame();
 });
+
 /* const myObject1 = new SquareObject({
 	mass: 2,
 	position: { x: 100, y: -100 },

@@ -1,0 +1,15 @@
+#scoresContainer {
+	box-sizing: border-box;
+	border: 2px solid black;
+	right: 0px;
+	border-radius: 5px;
+	padding-block: 20px;
+	padding-inline: 5px;
+	font-size: 1.4rem;
+	position: absolute;
+}
+.scoreItem {
+	border-block: 1px solid rgba(0, 0, 0, 0.329);
+	padding: 10px;
+	font-family: SupplyCenter;
+}

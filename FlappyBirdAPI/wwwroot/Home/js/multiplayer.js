@@ -106,7 +106,7 @@ connection.start().then(() => {
 						
 						if (response.valid) {
 							
-						if(in #ternalPlayerJoined){ //You join a room
+						if(internalPlayerJoined){ //You join a room
 
 							console.log("Joined Room:", room.roomID);
 							console.log(

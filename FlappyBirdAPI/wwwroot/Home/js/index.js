@@ -121,7 +121,7 @@ export function startGame() {
 		src: "flappybirdskin.png",
 		rotation: 0,
 	});
-	
+
 	myEnvironment.meta.player = myFlappyBird;
 	let myScore = new TextObject({
 		text: "0",
@@ -154,7 +154,7 @@ export function startGame() {
 	//Events
 	myFlappyBird.addEventListener("collide", (source, otherObject) => {
 		//If bird is falling
-		if (source.velocity.y > 0) {
+		if (source.velocity.y > 0 && !otherObject.noClip) {
 			if (source.position.y <= otherObject.position.y) {
 				source.velocity.y = 0;
 			}
@@ -163,6 +163,7 @@ export function startGame() {
 
 	//Pipes
 	myEnvironment.pipes = [];
+	myEnvironment.pickups = [];
 	myEnvironment.update({
 		interval: 3050 / 1000,
 		start: () => {
@@ -206,12 +207,12 @@ export function startGame() {
 			//Add Pipe cap
 			const topPipeCap = new ImageObject({
 				mass: 2,
-				position: { x: currentTopPipe.position.x, y: currentTopPipe.position.y+currentTopPipe.sizeY },
+				position: { x: currentTopPipe.position.x, y: currentTopPipe.position.y + currentTopPipe.sizeY },
 				velocity: { x: 0, y: 0 },
 				base: myEnvironment.base,
-				sizeX:50,
-				sizeY:20,
-				
+				sizeX: 50,
+				sizeY: 20,
+
 				resistance: -1,
 				environment: myEnvironment,
 				src: "Sprites/pipecap.png",
@@ -223,12 +224,12 @@ export function startGame() {
 
 			const bottomPipeCap = new ImageObject({
 				mass: 2,
-				position: { x: currentBottomPipe.position.x, y: currentBottomPipe.position.y},
+				position: { x: currentBottomPipe.position.x, y: currentBottomPipe.position.y },
 				velocity: { x: 0, y: 0 },
 				base: myEnvironment.base,
-				sizeX:50,
-				sizeY:20,
-				
+				sizeX: 50,
+				sizeY: 20,
+
 				resistance: -1,
 				environment: myEnvironment,
 				src: "Sprites/pipecap.png",
@@ -239,10 +240,13 @@ export function startGame() {
 			})
 			//Pickups
 			let coin = new PickupObject({
-				position: { x: currentBottomPipe.position.x, y: currentBottomPipe.position.y-200},
+				position: {
+					x: currentBottomPipe.position.x, y: (topPipeCap.position.y + bottomPipeCap.position.y) / 2 //Middle between top and bottom pipe
+						+ Math.floor(Math.random() * (40 - (-40)) - 40)
+				},
 				environment: myEnvironment,
-			
-		
+				radius:25,
+
 			})
 			//End pickups
 			currentBottomPipe.forceAspectRatio = false;
@@ -250,6 +254,7 @@ export function startGame() {
 			myEnvironment.pipes.push(currentBottomPipe);
 			myEnvironment.pipes.push(topPipeCap);
 			myEnvironment.pipes.push(bottomPipeCap);
+			myEnvironment.pickups.push(coin)
 			//Updating on backend
 		},
 	});
@@ -276,6 +281,18 @@ export function startGame() {
 				else {
 					pipe.position.y += 7.5;
 				} */
+				}
+			}
+			for (let pickup of myEnvironment.pickups) {
+				pickup.position.x -= 2
+				if (pickup.position.x + pickup.sizeX < 0) {
+					myEnvironment.pickups = myEnvironment.pickups.filter((p) => p !== pickup); //Delete pickup
+					myEnvironment.objects = myEnvironment.objects.filter(
+						(p) => p !== pickup
+					); //Delete pickup
+
+
+
 				}
 			}
 		},

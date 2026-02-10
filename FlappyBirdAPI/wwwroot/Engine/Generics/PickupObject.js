@@ -5,6 +5,8 @@ export class PickupObject extends CircleObject{
         super(rest)
         this.angle = 0
         this.color = color
+        this.noClip = true
+        this.radius = radius
     }
     draw(context){
        

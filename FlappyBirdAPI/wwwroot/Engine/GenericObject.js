@@ -12,7 +12,9 @@ export default class GenericObject {
 		deformable = false,
 		rotation,
 		meta,
+		noClip=false
 	}) {
+		
 		this.energyResetAllowed = true;
 		Object.assign(this, {
 			mass,
@@ -23,6 +25,7 @@ export default class GenericObject {
 			deformable,
 			rotation,
 			meta,
+			noClip
 		});
 		this.base = base ?? position.y;
 		this.energyStores = [];

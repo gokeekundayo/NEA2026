@@ -8,6 +8,10 @@ body {
 	width: 100vw;
 	height: 100vh;
 }
+#backgroundVid{
+	z-index: -10000;
+	position: fixed;
+}
 #backButton {
 	font-family: supplycenter;
 	width: 5rem;

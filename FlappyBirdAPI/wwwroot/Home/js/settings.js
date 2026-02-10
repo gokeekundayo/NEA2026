@@ -19,3 +19,6 @@ for (let settingButton of settingsButtons) {
 			elementStyles[".settingPage"].display;
 	});
 }
+getID("backgroundVid").addEventListener("contextmenu",(e)=>{
+	e.preventDefault()
+})

@@ -22,6 +22,9 @@
 .joinButtonContainer {
 	text-align: right;
 }
+#backgroundVid{
+	z-index: -10000000000000000;
+}
 #multiplayerScreen > #backButton {
 	bottom: 0;
 }

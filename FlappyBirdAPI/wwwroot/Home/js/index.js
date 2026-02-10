@@ -13,6 +13,7 @@ import { getID } from "../../Engine/Tools/Tools.js";
 import { GetAssetList, LoadAssets } from "./assets.js";
 import { connection } from "../../Engine/Tools/Connection.js";
 import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
+import { PickupObject } from "../../Engine/Generics/PickupObject.js";
 let loadedAssets = false;
 connection
 	.start()
@@ -120,6 +121,7 @@ export function startGame() {
 		src: "flappybirdskin.png",
 		rotation: 0,
 	});
+	
 	myEnvironment.meta.player = myFlappyBird;
 	let myScore = new TextObject({
 		text: "0",
@@ -162,7 +164,7 @@ export function startGame() {
 	//Pipes
 	myEnvironment.pipes = [];
 	myEnvironment.update({
-		interval: 1750 / 1000,
+		interval: 3050 / 1000,
 		start: () => {
 			//Create new Pipes
 			let minGap = myFlappyBird.sizeY * 2;
@@ -178,7 +180,7 @@ export function startGame() {
 				sizeY: topHeight,
 				resistance: -1,
 				environment: myEnvironment,
-				src: "Sprites/pipe-green-flip.png",
+				src: "Sprites/pipebody.png",
 				meta: {
 					pipePlace: "top",
 				},
@@ -196,14 +198,58 @@ export function startGame() {
 				sizeY: bottomHeight,
 				resistance: -1,
 				environment: myEnvironment,
-				src: "Sprites/pipe-green.png",
+				src: "Sprites/pipebody.png",
 				meta: {
 					pipePlace: "bottom",
 				},
 			});
+			//Add Pipe cap
+			const topPipeCap = new ImageObject({
+				mass: 2,
+				position: { x: currentTopPipe.position.x, y: currentTopPipe.position.y+currentTopPipe.sizeY },
+				velocity: { x: 0, y: 0 },
+				base: myEnvironment.base,
+				sizeX:50,
+				sizeY:20,
+				
+				resistance: -1,
+				environment: myEnvironment,
+				src: "Sprites/pipecap.png",
+				meta: {
+					pipePlace: "top",
+				},
+
+			})
+
+			const bottomPipeCap = new ImageObject({
+				mass: 2,
+				position: { x: currentBottomPipe.position.x, y: currentBottomPipe.position.y},
+				velocity: { x: 0, y: 0 },
+				base: myEnvironment.base,
+				sizeX:50,
+				sizeY:20,
+				
+				resistance: -1,
+				environment: myEnvironment,
+				src: "Sprites/pipecap.png",
+				meta: {
+					pipePlace: "top",
+				},
+
+			})
+			//Pickups
+			let coin = new PickupObject({
+				position: { x: currentBottomPipe.position.x, y: currentBottomPipe.position.y-200},
+				environment: myEnvironment,
+			
+		
+			})
+			//End pickups
 			currentBottomPipe.forceAspectRatio = false;
 			myEnvironment.pipes.push(currentTopPipe);
 			myEnvironment.pipes.push(currentBottomPipe);
+			myEnvironment.pipes.push(topPipeCap);
+			myEnvironment.pipes.push(bottomPipeCap);
 			//Updating on backend
 		},
 	});
@@ -223,7 +269,7 @@ export function startGame() {
 						(p) => p !== pipe
 					); //Delete pipe
 
-					myEnvironment.meta.score += 0.5;
+					myEnvironment.meta.score += 0.25;
 					myScore.text = myEnvironment.meta.score;
 					//When gone past a pipe
 					/* if (pipe.meta.pipePlace == "top") pipe.position.y -= 7.5;

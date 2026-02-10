@@ -100,11 +100,13 @@ connection.start().then(() => {
 					
 					///
 					GameHubRequest.addEventListener("JoinRoom",(response)=>{
-						console.log(response);
+						let internalPlayerJoined = response.source.connectionID==connectionID
 						//Check if this client that joined
+						console.log(internalPlayerJoined);
+						
 						if (response.valid) {
 							
-						if(response.source.connectionID==connectionID){
+						if(internalPlayerJoined){ //You join a room
 
 							console.log("Joined Room:", room.roomID);
 							console.log(
@@ -127,6 +129,8 @@ connection.start().then(() => {
 									player.username,
 									player.score
 								);
+								console.log("Adding new score element");
+								
 								getID("scoresContainer").appendChild(scoreElement.element);
 							}
 						);
@@ -146,7 +150,7 @@ connection.start().then(() => {
 							},
 						});
 					}
-					else{
+						else{
 						//If other player joined room
 						currentRoom.scores[response.source.connectionID] = new PlayerScore(
 							currentRoom.currentPlayers[response.source.connectionID].username,
@@ -156,10 +160,8 @@ connection.start().then(() => {
 						getID("scoresContainer").appendChild(
 							currentRoom.scores[response.source.connectionID].element
 						);
-						console.log(
-							"scoress"
-						)
-					}
+						console.log("Other player joined")
+					}//Only runs if valid response
 					
 						currentRoomLocal = currentRoom //This is the room that the current client has joined
 					}

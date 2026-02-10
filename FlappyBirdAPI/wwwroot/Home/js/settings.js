@@ -22,3 +22,6 @@ for (let settingButton of settingsButtons) {
 getID("backgroundVid").addEventListener("contextmenu",(e)=>{
 	e.preventDefault()
 })
+window.addEventListener("click",()=>{
+	getID("backgroundVid").play()
+})

@@ -15,6 +15,13 @@ import { connection } from "../../Engine/Tools/Connection.js";
 import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
 import { PickupObject } from "../../Engine/Generics/PickupObject.js";
 let loadedAssets = false;
+let currentInventory = [];
+if(localStorage.getItem("inventory")==undefined){
+	localStorage.setItem("inventory",[])
+}
+else{
+	currentInventory = localStorage.getItem("inventory")
+}
 connection
 	.start()
 	.then(() => {
@@ -158,6 +165,12 @@ export function startGame() {
 			if (source.position.y <= otherObject.position.y) {
 				source.velocity.y = 0;
 			}
+		}
+
+		if(otherObject instanceof PickupObject){
+			currentInventory.push(otherObject)
+			localStorage.setItem("inventory", currentInventory.map(item=>item.constructor.name ))
+				
 		}
 	});
 

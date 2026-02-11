@@ -102,3 +102,11 @@
 	margin: 0.3rem;
 	font-family: SupplyCenter;
 }
+#coins {
+	grid-row: info;
+	grid-column: right;
+	font-family: SupplyCenter;
+	font-size: 2rem;
+	align-self: center;
+	justify-self: center;
+}

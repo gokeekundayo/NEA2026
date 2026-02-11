@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="./css/multiplayer.css">
 		<link rel="stylesheet" href="./css/scores.css">
 		<title>Physics Engine</title>
+		<link rel="stylesheet" href="./css/coin.css">
 	</head>
 	<body>
 		<!-- This is the background -->
@@ -55,6 +56,22 @@
 					<div id="progressFill"></div>
 				</div>
 				<div id="progressInfo">Loading: <b id="currentAssetText"></b></div>
+			</div>
+			<div id="coins">
+				<coin-container>
+  <coin-side>
+    <div></div>
+  </coin-side>
+
+  <coin-face>
+    <coin-face-front-outer>$</coin-face-front-outer>
+    <coin-face-front-inner></coin-face-front-inner>
+    <coin-face-back-outer>$</coin-face-back-outer>
+    <coin-face-back-inner></coin-face-back-inner>
+  </coin-face><pre>    <span id="coinsValue">200</span></pre>
+  
+</coin-container>
+	
 			</div>
 		</div>
 		<div id="multiplayerScreen" page="Multiplayer" class="routePage">

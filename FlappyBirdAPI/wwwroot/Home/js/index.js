@@ -16,11 +16,13 @@ import { ServerRequest } from "../../Engine/Tools/ServerRequest.js";
 import { PickupObject } from "../../Engine/Generics/PickupObject.js";
 let loadedAssets = false;
 let currentInventory = [];
-if(localStorage.getItem("inventory")==undefined){
-	localStorage.setItem("inventory",[])
-}
-else{
-	currentInventory = localStorage.getItem("inventory")
+let coins;
+getID("coinsValue").textContent = localStorage.getItem("coins") || 0;
+if (localStorage.getItem("coins") == undefined) {
+	localStorage.setItem("coins", 0);
+} else {
+	coins = localStorage.getItem("coins");
+	coins = parseInt(coins);
 }
 connection
 	.start()
@@ -148,7 +150,7 @@ export function startGame() {
 
 			myFlappyBird.position.y = Math.min(
 				myFlappyBird.position.y,
-				myEnvironment.base - myFlappyBird.sizeY - 1
+				myEnvironment.base - myFlappyBird.sizeY - 1,
 			);
 		},
 	});
@@ -167,10 +169,18 @@ export function startGame() {
 			}
 		}
 
-		if(otherObject instanceof PickupObject){
-			currentInventory.push(otherObject)
-			localStorage.setItem("inventory", currentInventory.map(item=>item.constructor.name ))
-				
+		if (otherObject instanceof PickupObject) {
+			//Collect pickup
+			myEnvironment.pickups = myEnvironment.pickups.filter(
+				(p) => p !== otherObject,
+			);
+			myEnvironment.objects = myEnvironment.objects.filter(
+				(p) => p !== otherObject,
+			);
+			coins = parseInt(localStorage.getItem("coins"));
+			coins += 1;
+			getID("coinsValue").textContent = coins;
+			localStorage.setItem("coins", coins);
 		}
 	});
 
@@ -220,7 +230,10 @@ export function startGame() {
 			//Add Pipe cap
 			const topPipeCap = new ImageObject({
 				mass: 2,
-				position: { x: currentTopPipe.position.x, y: currentTopPipe.position.y + currentTopPipe.sizeY },
+				position: {
+					x: currentTopPipe.position.x,
+					y: currentTopPipe.position.y + currentTopPipe.sizeY,
+				},
 				velocity: { x: 0, y: 0 },
 				base: myEnvironment.base,
 				sizeX: 50,
@@ -232,12 +245,14 @@ export function startGame() {
 				meta: {
 					pipePlace: "top",
 				},
-
-			})
+			});
 
 			const bottomPipeCap = new ImageObject({
 				mass: 2,
-				position: { x: currentBottomPipe.position.x, y: currentBottomPipe.position.y },
+				position: {
+					x: currentBottomPipe.position.x,
+					y: currentBottomPipe.position.y,
+				},
 				velocity: { x: 0, y: 0 },
 				base: myEnvironment.base,
 				sizeX: 50,
@@ -249,25 +264,34 @@ export function startGame() {
 				meta: {
 					pipePlace: "top",
 				},
-
-			})
+			});
 			//Pickups
+			let coinX =
+				Math.floor(
+					Math.random() *
+						(currentBottomPipe.position.x +
+							200 -
+							currentBottomPipe.position.x -
+							60),
+				) +
+				(currentBottomPipe.position.x + 60);
+			let coinY =
+				Math.floor(Math.random() * (myEnvironment.base - 100 - 100)) + 100;
 			let coin = new PickupObject({
 				position: {
-					x: currentBottomPipe.position.x, y: (topPipeCap.position.y + bottomPipeCap.position.y) / 2 //Middle between top and bottom pipe
-						+ Math.floor(Math.random() * (40 - (-40)) - 40)
+					x: coinX,
+					y: coinY,
 				},
 				environment: myEnvironment,
-				radius:25,
-
-			})
+				radius: 10,
+			});
 			//End pickups
 			currentBottomPipe.forceAspectRatio = false;
 			myEnvironment.pipes.push(currentTopPipe);
 			myEnvironment.pipes.push(currentBottomPipe);
 			myEnvironment.pipes.push(topPipeCap);
 			myEnvironment.pipes.push(bottomPipeCap);
-			myEnvironment.pickups.push(coin)
+			myEnvironment.pickups.push(coin);
 			//Updating on backend
 		},
 	});
@@ -284,7 +308,7 @@ export function startGame() {
 				if (pipe.position.x + pipe.sizeX < 0) {
 					myEnvironment.pipes = myEnvironment.pipes.filter((p) => p !== pipe); //Delete pipe
 					myEnvironment.objects = myEnvironment.objects.filter(
-						(p) => p !== pipe
+						(p) => p !== pipe,
 					); //Delete pipe
 
 					myEnvironment.meta.score += 0.25;
@@ -297,15 +321,14 @@ export function startGame() {
 				}
 			}
 			for (let pickup of myEnvironment.pickups) {
-				pickup.position.x -= 2
+				pickup.position.x -= 2;
 				if (pickup.position.x + pickup.sizeX < 0) {
-					myEnvironment.pickups = myEnvironment.pickups.filter((p) => p !== pickup); //Delete pickup
-					myEnvironment.objects = myEnvironment.objects.filter(
-						(p) => p !== pickup
+					myEnvironment.pickups = myEnvironment.pickups.filter(
+						(p) => p !== pickup,
 					); //Delete pickup
-
-
-
+					myEnvironment.objects = myEnvironment.objects.filter(
+						(p) => p !== pickup,
+					); //Delete pickup
 				}
 			}
 		},
